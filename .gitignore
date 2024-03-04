@@ -7,7 +7,8 @@ __pycache__/
 *.pyo
 *.pyd
 *.swp
-venv/
+/venv/
+
 
 # Docker
 .docker/
