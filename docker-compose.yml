@@ -9,6 +9,8 @@ services:
         CACHEBUST: $RANDOM 
     ports:
       - "5000:5000"
+    volumes:
+      - ./resources/python/templates:/app/src/templates
     environment:
       DB_USER: idubi
       DB_PASSWORD: idubi
