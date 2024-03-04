@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.log
+*.sqlite3
+*.pyc
+*.pyo
+*.pyd
+*.swp
+
+# Docker
+.docker/
+.DS_Store
+docker-compose.override.yml
+
+# Jenkins
+target/
+*.class
+*.war
+*.jar
+*.hpi
+*.pom
+*.log
+*.tmp
+work/
