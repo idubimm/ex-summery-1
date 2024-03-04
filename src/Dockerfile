@@ -11,6 +11,9 @@ ENV DB_USER=idubi
 ENV DB_PASSWORD=idubi
 ENV DB_NAME=idubi
 ENV DB_TYPE=postgresql
-ENV DB_HOST=host.docker.internal
+ENV DB_HOST=$DB_HOST
+# ENV DB_HOST=host.docker.internal
+# ENV DB_HOST=192.168.49.1
+
 ENV DB_PORT=5432
 CMD ["flask", "run", "--host=0.0.0.0"]

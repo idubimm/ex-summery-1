@@ -6,6 +6,10 @@ docker run --name=test1_0 -p 5000:5000 -d test1:0
 docker run --name=test_1 -p 5000:5000 -d test:1
 docker run --name=test_3 -p 5000:5000 -d test:3
 docker run --name=test_5 -p 5000:5000 -d test:5
+
+
+docker run --name=test_1 -p 5000:5000 -e "DB_HOST=176.228.65.100" -d test:1
+
 SQLALCHEMY_DATABASE_URI = 'postgresql://your_postgres_user:your_postgres_password@postgres-db:5432/your_database_name'
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://idubi:idubi@localhost:5432/idubi"
 
@@ -16,3 +20,42 @@ postgresql://idubi:idubi@localhost:5432/idubi
 $ docker build -t test:1 src/
 
 $ docker compose build --build-arg CACHEBUST=$(date +%s)
+
+PGPASSWORD=idubi psql -h 127.0.0.1 -U idubi -d idubi
+PGPASSWORD=idubi psql -h 192.168.49.1 -U idubi -d idubi
+
+ 
+ psql -h 127.0.0.1 -U idubi -d idubi -p 5432
+ psql -h 176.228.65.100 -U idubi -d idubi -p 5432
+ psql -h 192.168.49.1 -U idubi -d idubi -p 5432
+ 
+
+ 
+docker run --rm -it --name alpine alpine sh
+docker run --rm -it --name alpine python:3.8-slim sh
+
+
+apt update && apt upgrade
+apt install postgresql-client
+apt install iputils-ping
+apt install net-tools
+
+
+docker run -itd --name=alpine1 --network=idubi-network alpine sh -c "apk add iputils && ping localhost"
+docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres
+
+
+docker build --build-arg DB_HOST='192.168.49.1' -t test:1 ./src/
+
+
+docker build -t test:1 ./src/
+docker run --name=test_1 -p 5000:5000 -e "DB_HOST=192.168.49.1" -d test:1
+
+dk rm -f test_1 && dk rmi test:1
+
+
+
+docker-compose build --build-arg CACHEBUST=$(date +%s)
+docker-compose -p exescise_1_summery -d up 
+
+
