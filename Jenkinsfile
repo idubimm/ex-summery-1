@@ -17,17 +17,29 @@ pipeline {
         stage ('prepare dev environmant - create docer db with data '){
             steps{
                 script {
-                        // check that user logged in to docker 
-                        def loggedIn = sh(script: 'docker info | grep -i "Username"', returnStatus: true)
-                            if (loggedIn != 0) {
-                                // Not logged in, perform login using credentials stored in Jenkins
-                                withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                                }
-                            }    
-                        // run db image     
-                        sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres "  
-                    }
+                        // check that docker container not running ' if rinninng then skip' 
+                        checkRunningPostgresContainers = "docker ps |grep postgers-idubi|wc |awk 'BEGIN {FS=" "}{print $1}"
+                        def activePostgres = sh checkRunningPostgresContainers
+                        if ["$activePostgres" -eq 0]{
+                           checkStopedPostgresContainers = "docker ps |grep postgers-idubi|wc |awk 'BEGIN {FS=" "}{print $1}"
+                           def inActivePostgres = sh "docker ps -a|grep postgers-idubi|wc |awk 'BEGIN {FS=" "}{print $1}"
+                                 if ["$inActivePostgres" -eq 0]{
+                                // check that user logged in to docker , log in and run the image  
+                                def loggedIn = sh(script: 'docker info | grep -i "Username"', returnStatus: true)
+                                    if (loggedIn != 0) {
+                                        // Not logged in, perform login using credentials stored in Jenkins
+                                        withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                            sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                                        }
+                                    }    
+                                // run db image     
+                                sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres "  
+                            } 
+                            //  if inactive > 0 we need only to start it 
+                            else {
+                                sh "docker start postgers-idubi"
+                            }  
+                }
             }
         }
         stage('Test PostgreSQL Connectivity') {
