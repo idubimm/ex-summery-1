@@ -2,10 +2,28 @@ pipeline {
     agent any
 
     stages {
-        stage('Hello') {
+        stage('Setup Python Environment') {
             steps {
-                echo 'Hello World'
+                script {
+                    // Check if the virtual environment exists, if not create it
+                    if (!fileExists("${VENV}")) {
+                        sh 'python -m venv venv'
+                    }
+                    // Install dependencies
+                    sh '. venv/bin/activate && pip install -r requirements.txt'
+                }
+            }
+        }
+        stage('Run Flask Application') {
+            steps {
+                script {
+                    // Run the Flask application
+                    // Ensure to replace `app.py` with the path to your Flask application entry point
+                    // Also, adjust host and port as necessary
+                    sh '. $venv/bin/activate && python app.py'
+                }
             }
         }
     }
+        
 }
