@@ -14,44 +14,42 @@ pipeline {
                 }
             }
         }
-        stage ('prepare dev environmant - create docer db with data '){
-            steps{
+
+
+
+  stage('Manage Docker Container') {
+            steps {
                 script {
-                        // check that docker container not running ' if rinninng then skip' 
-                        checkRunningPostgresContainers = "docker ps |grep postgers-idubi|wc |awk 'BEGIN {FS=" "}{print $1}"
-                        def activePostgres = sh checkRunningPostgresContainers
-                        if ["$activePostgres" -eq 0]{
-                           checkStopedPostgresContainers = 'docker ps |grep postgers-idubi|wc |awk "BEGIN {FS=/" /"}{print $1}"'
-                           def inActivePostgres = sh "docker ps -a|grep postgers-idubi|wc |awk 'BEGIN {FS=" "}{print $1}"
-                                 if ["$inActivePostgres" -eq 0]{
-                                // check that user logged in to docker , log in and run the image  
-                                def loggedIn = sh(script: 'docker info | grep -i "Username"', returnStatus: true)
-                                    if (loggedIn != 0) {
-                                        // Not logged in, perform login using credentials stored in Jenkins
-                                        withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                                            sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                                        }
-                                    }    
-                                // run db image     
-                                sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres "  
-                            } 
-                            //  if inactive > 0 we need only to start it 
-                            else {
-                                sh "docker start postgers-idubi"
-                            }  
+                    // Step 1: Check if the Docker container is up and running
+                    def runningContainers = sh(script: "docker ps | grep postgers-idubi | wc -l", returnStdout: true).trim()
+                    
+                    if (runningContainers == "0") {
+                        // The container is not running; check if it is stopped
+                        def stoppedContainers = sh(script: "docker ps -a | grep postgers-idubi | wc -l", returnStdout: true).trim()
+                        
+                        if (stoppedContainers != "0") {
+                            // The container exists but is stopped; start the container
+                            sh "docker start postgers-idubi"
+                        } else {
+                            // The container does not exist; check Docker login
+                            def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
+                            
+                            if (loggedIn != 0) {
+                                // Docker is not logged in; perform login using credentials stored in Jenkins
+                                withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                                }
+                            }
+                            
+                            // Docker is logged in; run the new container
+                            sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres"
+                        }
+                    }
                 }
             }
         }
-        stage('Test PostgreSQL Connectivity') {
-            steps {
-                script {
-                    // Adjust the waiting time as necessary for your container startup
-                    sleep(30) // Wait for a few seconds to allow PostgreSQL to initialize
-                     
-                    sh "docker exec postgers-idubi pg_isready -h localhost"
-                }
-            }
-        }        
+
+          
         stage('Run Flask Application') {
             steps {
                 script {
