@@ -21,7 +21,7 @@ pipeline {
                         checkRunningPostgresContainers = "docker ps |grep postgers-idubi|wc |awk 'BEGIN {FS=" "}{print $1}"
                         def activePostgres = sh checkRunningPostgresContainers
                         if ["$activePostgres" -eq 0]{
-                           checkStopedPostgresContainers = "docker ps |grep postgers-idubi|wc |awk 'BEGIN {FS=" "}{print $1}"
+                           checkStopedPostgresContainers = 'docker ps |grep postgers-idubi|wc |awk "BEGIN {FS=/" /"}{print $1}"'
                            def inActivePostgres = sh "docker ps -a|grep postgers-idubi|wc |awk 'BEGIN {FS=" "}{print $1}"
                                  if ["$inActivePostgres" -eq 0]{
                                 // check that user logged in to docker , log in and run the image  
