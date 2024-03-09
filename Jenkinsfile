@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     // Check if the virtual environment exists, if not create it
-                    if (!fileExists("${VENV}")) {
+                    if (!fileExists("venv")) {
                         sh 'python -m venv venv'
                     }
                     // Install dependencies
