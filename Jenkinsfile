@@ -10,7 +10,7 @@ pipeline {
                         sh 'python -m venv venv'
                     }
                     // Install dependencies
-                    sh '. venv/bin/activate && pip install -r requirements.txt'
+                    sh '. venv/bin/activate && pip install -r ./src/requirements.txt'
                 }
             }
         }
