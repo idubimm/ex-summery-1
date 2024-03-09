@@ -20,7 +20,7 @@ pipeline {
                     // Run the Flask application
                     // Ensure to replace `app.py` with the path to your Flask application entry point
                     // Also, adjust host and port as necessary
-                    sh '. $venv/bin/activate && python app.py'
+                    sh '. $venv/bin/activate && python ./src/app.py'
                 }
             }
         }
