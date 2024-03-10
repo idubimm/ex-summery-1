@@ -94,18 +94,28 @@ pipeline {
             steps{
                 script{
                   sh 'docker stop postgers-idubi'
-                  sh 'docker compose -f docker compose image'
+                  sh 'docker-compose -f ./docker-compose-image.yml up -d'
                 }
             }
         }
 
+        stage('check logs to see app running') {
+            steps {
+                script {
+                    // chek logs of application execution
+                    sh 'sleep 10'
+                    def success_app_py = sh(script: "docker logs  ex-summery-1_web-app_1 | grep 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
+                    int count_success = success_app_py.toInteger()
+                }
+            }
+        }
 
         stage('stop postgres if active and excecute dockr compose'){
             steps{
                 script{
-                    sh 'docker stop postgers-idubi     '
                     sh 'docker compose build --build-arg CACHEBUST=$(date +%s)'
-                    sh 'docker-compose -f ./docker-compose-image.yml -d up '
+                    sh 'docker-compose -f ./docker-compose-image.yml down'
+                    sh 'docker stop postgers-idubi     '
                 }
             }
         }
