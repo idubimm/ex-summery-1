@@ -86,7 +86,7 @@ pipeline {
 
 
 
-        post ('stop postgres container') {
+        post  {
             always  {
                         if (containerWasStarted) {
                             sh "docker stop postgers-idubi"
