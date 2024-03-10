@@ -99,13 +99,14 @@ pipeline {
             }
         }
 
-        stage('check logs to see app running') {
+        stage('check container logs to see compose app running (after push) ') {
             steps {
                 script {
                     // chek logs of application execution
                     sh 'sleep 10'
                     def success_app_py = sh(script: "docker logs  ex-summery-1_web-app_1 | grep 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
                     int count_success = success_app_py.toInteger()
+                    
                 }
             }
         }
