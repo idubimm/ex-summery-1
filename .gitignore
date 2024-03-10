@@ -10,7 +10,8 @@ __pycache__/
 *.pyd
 *.swp
 /.history/
-/resources/postgres/
+resources/
+postgres/
 /ignore/
 
 # Docker
