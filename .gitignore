@@ -29,4 +29,5 @@ target/
 *.tmp
 work/
 aws/static-website-example-master/
+aws/static-website-example-master/test
 
