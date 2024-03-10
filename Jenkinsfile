@@ -15,7 +15,7 @@ pipeline {
             }
         }
 
-  stage('Manage Docker Container') {
+        stage('Manage Docker Container') {
             steps {
                 script {
                     // Step 1: Check if the Docker container is up and running
@@ -69,15 +69,6 @@ pipeline {
                     int count_success = success_app_py.toInteger()
                 }
             }
-            post{
-                always{
-                    steps{
-                        script{
-                            sh 'pkill -f "python.*src/app.py"'      
-                        }
-                    }
-                }
-            }
         }
     }
     post  {
@@ -88,6 +79,9 @@ pipeline {
                             sh "docker stop postgers-idubi"
                         }  
                     }       
+                    script{
+                        sh 'pkill -f "python.*src/app.py"'      
+                    }
                 }
             }
     }
