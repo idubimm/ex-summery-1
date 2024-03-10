@@ -88,7 +88,6 @@ pipeline {
 
         post ('stop postgres container') {
             always  {
-                script {
                         if (containerWasStarted) {
                             sh "docker stop postgers-idubi"
                         }                      
@@ -96,5 +95,4 @@ pipeline {
 
             }
         }
-    }
 }
