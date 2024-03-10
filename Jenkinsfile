@@ -123,11 +123,11 @@ pipeline {
                         
 
 
-
+ 
 
     }
 
-    // post  {
+    // post  { 
     //         always  {  
     //               script {              
     //                     sh 'pkill -f "python.*src/app.py"'
