@@ -68,12 +68,12 @@ pipeline {
                     def success_app_py = sh(script: "cat app_1.log | grep 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
                     int count_success = success_app_py.toInteger()
                 }
-                post{
-                    always{
-                        steps{
-                            script{
-                                sh 'pkill -f "python.*src/app.py"'      
-                            }
+            }
+            post{
+                always{
+                    steps{
+                        script{
+                            sh 'pkill -f "python.*src/app.py"'      
                         }
                     }
                 }
