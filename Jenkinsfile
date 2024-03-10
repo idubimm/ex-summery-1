@@ -5,6 +5,20 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 script {
+
+                //  declare function
+                def dockerLogin = { 
+                            def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
+                            
+                            if (loggedIn != 0) {
+                                // Docker is not logged in; perform login using credentials stored in Jenkins
+                                withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                                }
+                            }
+                        }
+
+
                     // Check if the virtual environment exists, if not create it
                     if (!fileExists("venv")) {
                         sh 'python -m venv venv'
@@ -21,7 +35,7 @@ pipeline {
                     // Step 1: Check if the Docker container is up and running
                     def runningContainers = sh(script: "docker ps | grep postgers-idubi | wc -l", returnStdout: true).trim()
                     // this is a flag that we follow so if we start the container , we need to stop it later
-                    containerWasStarted = false                    
+                    def isDockerLoggedIn = false                  
                     if (runningContainers == "0") {
                         // The container is not running; check if it is stopped
                         def stoppedContainers = sh(script: "docker ps -a | grep postgers-idubi | wc -l", returnStdout: true).trim()
@@ -29,21 +43,12 @@ pipeline {
                         if (stoppedContainers != "0") {
                             // The container exists but is stopped; start the container
                             sh "docker start postgers-idubi"
-                            containerWasStarted = true
                         } else {
                             // The container does not exist; check Docker login
-                            def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
-                            
-                            if (loggedIn != 0) {
-                                // Docker is not logged in; perform login using credentials stored in Jenkins
-                                withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                                }
-                            }
+                            dockerLogin()
                             
                             // Docker is logged in; run the new container
                             sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres"
-                            containerWasStarted = true
                         }
                     }
                 }
@@ -70,14 +75,50 @@ pipeline {
                 }
             }
         }
+
+        stage('build docker image for flask app and push to huib'){
+            steps{
+                script{
+                  sh 'docker build -t idubi/flask-app:lts'
+                  dockerLogin()
+                  sh 'docker push idubi/flask-app:lts'
+                }
+            }
+        }
+
+        stage('test with docker compose'){
+            steps{
+                script{
+                  sh 'docker stop postgers-idubi'
+                  sh 'docker compose -f docker compose image'
+                }
+            }
+        }
+
+
+        stage('stop postgres if active and excecute dockr compose'){
+            steps{
+                script{
+                    sh 'docker stop postgers-idubi     '
+                    sh 'docker compose build --build-arg CACHEBUST=$(date +%s)'
+                    sh 'docker-compose -f ./docker-compose-image.yml -d up '
+                }
+            }
+        }
+
+                        
+
+
+
+
     }
+
     post  {
             always  {  
                   script {              
-                        if (containerWasStarted) {
-                            sh "docker stop postgers-idubi"
-                        }  
+                        sh "docker stop postgers-idubi"
                         sh 'pkill -f "python.*src/app.py"'
+                        sh 'docker compose-down -f ./docker-compose-image.yml down'
                   }
                 }
             }
