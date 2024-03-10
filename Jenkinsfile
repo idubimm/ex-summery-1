@@ -79,7 +79,7 @@ pipeline {
         stage('build docker image for flask app and push to huib'){
             steps{
                 script{
-                  sh 'docker build -t idubi/flask-app:lts'
+                  sh 'docker build -t idubi/flask-app:lts ./src/'
                   dockerLogin()
                   sh 'docker push idubi/flask-app:lts'
                 }
