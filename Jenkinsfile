@@ -72,17 +72,12 @@ pipeline {
         }
     }
     post  {
-            always  {
-                steps{
-                    script{
-                        if (containerWasStarted) {
-                            sh "docker stop postgers-idubi"
-                        }  
-                    }       
-                    script{
-                        sh 'pkill -f "python.*src/app.py"'      
-                    }
-                }
+            always  {                
+                    if (containerWasStarted) {
+                        sh "docker stop postgers-idubi"
+                    }  
+                    sh 'pkill -f "python.*src/app.py"'      
             }
+        }
     }
-}
+ 
