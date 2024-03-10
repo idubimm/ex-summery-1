@@ -91,13 +91,10 @@ pipeline {
                 script {
                         if (containerWasStarted) {
                             sh "docker stop postgers-idubi"
-                        }
-                }
-                script{
-                        sh 'pkill -f "python.*app.py"'
-                }
+                        }                      
+                        sh 'pkill -f "python.*app.py"'              
 
             }
+        }
     }
-        
 }
