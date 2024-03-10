@@ -54,10 +54,8 @@ pipeline {
         stage('Run Flask Application') {
             steps {
                 script {
-                    // Run the Flask application
-                    // Ensure to replace `app.py` with the path to your Flask application entry point
-                    // Also, adjust host and port as necessary
-                    sh 'nohup python src/app.py > app.log 2>&1'
+                    // Run the Flask application in no hup so it will not ber stuck
+                    sh 'nohup python src/app.py > app_1.log&'
                 }
             }
         }
@@ -65,10 +63,7 @@ pipeline {
         stage('check logs to see app running') {
             steps {
                 script {
-                    // Run the Flask application
-                    // Ensure to replace `app.py` with the path to your Flask application entry point
-                    // Also, adjust host and port as necessary
-                    sh 'nohup python src/app.py > app_1.log'
+                    // chek logs of application execution
                     sh 'sleep 10'
                     def success_app_py = sh(script: "cat app_1.log | grep 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
                     int count_success = success_app_py.toInteger()
@@ -77,7 +72,7 @@ pipeline {
                     always{
                         steps{
                             script{
-                                sh 'pkill -f "python.*app.py"'      
+                                sh 'pkill -f "python.*src/app.py"'      
                             }
                         }
                     }
