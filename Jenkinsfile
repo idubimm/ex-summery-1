@@ -127,13 +127,13 @@ pipeline {
 
     }
 
-    post  {
-            always  {  
-                  script {              
-                        sh 'pkill -f "python.*src/app.py"'
-                        sh 'docker compose-down -f ./docker-compose-image.yml down'
-                  }
-                }
-            }
+    // post  {
+    //         always  {  
+    //               script {              
+    //                     sh 'pkill -f "python.*src/app.py"'
+    //                     sh 'docker compose-down -f ./docker-compose-image.yml down'
+    //               }
+    //             }
+    //         }
     }
 
