@@ -75,7 +75,7 @@ pipeline {
                 }
                 post{
                     always{
-                        step{
+                        step('kill processes of app that  are executing'){
                             sh 'pkill -f "python.*app.py"'      
                         }
                     }
@@ -85,7 +85,7 @@ pipeline {
     }
     post  {
             always  {
-                step{
+                step('stop container if started in the flow'){
                         if (containerWasStarted) {
                             sh "docker stop postgers-idubi"
                         }         
