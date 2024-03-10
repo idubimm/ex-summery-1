@@ -99,12 +99,12 @@ pipeline {
             }
         }
 
-        stage('check container logs to see compose app running (after push) ') {
+        stage('check curl that app is running (after push) ') {
             steps {
                 script {
                     // chek logs of application execution
                     sh 'sleep 10'
-                    def success_app_py = sh(script: "docker logs  ex-summery-1_web-app_1 | grep 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
+                    def success_app_py = sh(script: "curl localhost|grep 'User Form'|wc 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
                     int count_success = success_app_py.toInteger()
                     
                 }
@@ -114,7 +114,6 @@ pipeline {
         stage('stop postgres if active and excecute dockr compose'){
             steps{
                 script{
-                    sh 'docker compose build --build-arg CACHEBUST=$(date +%s)'
                     sh 'docker-compose -f ./docker-compose-image.yml down'
                     sh 'docker stop postgers-idubi     '
                 }
