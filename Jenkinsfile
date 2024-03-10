@@ -1,6 +1,14 @@
 pipeline {
     agent any
+
     stages {
+        stage('clear jenkins cache') {
+            steps {
+                script {
+                    sh 'rm -fr /var/lib/jenkins/caches/*'
+                }
+            }   
+        }
         stage('Setup Python Environment') {
             steps {
                 script {
