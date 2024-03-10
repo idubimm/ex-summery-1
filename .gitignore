@@ -28,3 +28,5 @@ target/
 *.log
 *.tmp
 work/
+aws/static-website-example-master/
+
