@@ -104,8 +104,8 @@ pipeline {
                 script {
                     // chek logs of application execution
                     sh 'sleep 10'
-                    def success_app_py = sh(script: "curl localhost|grep 'User Form'|wc 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
-                    int count_success = success_app_py.toInteger()
+                    // def success_app_py = sh(script: "curl localhost|grep 'User Form'|wc 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
+                    // int count_success = success_app_py.toInteger()
                     
                 }
             }
@@ -127,13 +127,13 @@ pipeline {
 
     }
 
-    // post  {
-    //         always  {  
-    //               script {              
-    //                     sh 'pkill -f "python.*src/app.py"'
-    //                     sh 'docker compose-down -f ./docker-compose-image.yml down'
-    //               }
-    //             }
-    //         }
+    post  {
+            always  {  
+                  script {              
+                        sh 'pkill -f "python.*src/app.py"'
+                        sh 'docker compose-down -f ./docker-compose-image.yml down'
+                  }
+                }
+            }
     }
 
