@@ -73,7 +73,6 @@ pipeline {
                         if (containerWasStarted) {
                             sh "docker stop postgers-idubi"
                         }  
-                        pkill -f "python.*src/app.py"      
                         sh 'pkill -f "python.*src/app.py"'
                   }
                 }
