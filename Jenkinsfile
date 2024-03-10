@@ -72,27 +72,20 @@ pipeline {
                     sh 'sleep 10'
                     def success_app_py = sh(script: "cat app_1.log | grep 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
                     int count_success = success_app_py.toInteger()
-
-            }
-        }
-
-        stage('kill running app after test') {
-            steps {
-                script {
-                    sh 'pkill -f "python.*app.py"'
+                }
+                post{
+                    always{
+                        sh 'pkill -f "python.*app.py"'      
+                    }
                 }
             }
         }
-
-
-
-        post  {
+    }
+    post  {
             always  {
                         if (containerWasStarted) {
                             sh "docker stop postgers-idubi"
-                        }                      
-                        sh 'pkill -f "python.*app.py"'              
-
+                        }         
             }
-        }
+    }
 }
