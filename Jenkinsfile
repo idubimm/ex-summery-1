@@ -7,16 +7,6 @@ pipeline {
                 script {
 
                 //  declare function
-                def dockerLogin = { 
-                            def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
-                            
-                            if (loggedIn != 0) {
-                                // Docker is not logged in; perform login using credentials stored in Jenkins
-                                withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                                }
-                            }
-                        }
 
 
                     // Check if the virtual environment exists, if not create it
@@ -45,7 +35,14 @@ pipeline {
                             sh "docker start postgers-idubi"
                         } else {
                             // The container does not exist; check Docker login
-                            dockerLogin()
+                            def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
+                            
+                            if (loggedIn != 0) {
+                                // Docker is not logged in; perform login using credentials stored in Jenkins
+                                withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                                }
+                            }
                             
                             // Docker is logged in; run the new container
                             sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres"
@@ -80,7 +77,14 @@ pipeline {
             steps{
                 script{
                   sh 'docker build -t idubi/flask-app:lts ./src/'
-                  dockerLogin()
+                   def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
+                            
+                            if (loggedIn != 0) {
+                                // Docker is not logged in; perform login using credentials stored in Jenkins
+                                withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                                }
+                            }
                   sh 'docker push idubi/flask-app:lts'
                 }
             }
