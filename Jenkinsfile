@@ -15,14 +15,13 @@ pipeline {
             }
         }
 
-
-
   stage('Manage Docker Container') {
             steps {
                 script {
                     // Step 1: Check if the Docker container is up and running
                     def runningContainers = sh(script: "docker ps | grep postgers-idubi | wc -l", returnStdout: true).trim()
-                    
+                    // this is a flag that we follow so if we start the container , we need to stop it later
+                    containerWasStarted = false                    
                     if (runningContainers == "0") {
                         // The container is not running; check if it is stopped
                         def stoppedContainers = sh(script: "docker ps -a | grep postgers-idubi | wc -l", returnStdout: true).trim()
@@ -30,6 +29,7 @@ pipeline {
                         if (stoppedContainers != "0") {
                             // The container exists but is stopped; start the container
                             sh "docker start postgers-idubi"
+                            containerWasStarted = true
                         } else {
                             // The container does not exist; check Docker login
                             def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
@@ -43,6 +43,7 @@ pipeline {
                             
                             // Docker is logged in; run the new container
                             sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres"
+                            containerWasStarted = true
                         }
                     }
                 }
@@ -56,10 +57,47 @@ pipeline {
                     // Run the Flask application
                     // Ensure to replace `app.py` with the path to your Flask application entry point
                     // Also, adjust host and port as necessary
-                    sh '. venv/bin/activate && python ./src/app.py'
+                    sh 'nohup python src/app.py > app.log 2>&1'
                 }
             }
         }
+
+        stage('check logs to see app running') {
+            steps {
+                script {
+                    // Run the Flask application
+                    // Ensure to replace `app.py` with the path to your Flask application entry point
+                    // Also, adjust host and port as necessary
+                    sh 'nohup python src/app.py > app_1.log'
+                    sh 'sleep 10'
+                    def success_app_py = sh(script: "cat app_1.log | grep 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
+                    int count_success = success_app_py.toInteger()
+
+            }
+        }
+
+        stage('kill running app after test') {
+            steps {
+                script {
+                    sh 'pkill -f "python.*app.py"'
+                }
+            }
+        }
+
+
+
+        finally('stop postgres container') {
+            steps {
+                script {
+                        if (containerWasStarted) {
+                            sh "docker stop postgers-idubi"
+                        }
+                }
+                script{
+                        sh 'pkill -f "python.*app.py"'
+                }
+
+            }
     }
         
 }
