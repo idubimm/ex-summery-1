@@ -5,7 +5,7 @@ pipeline {
         stage('clear jenkins cache') {
             steps {
                 script {
-                    sh 'rm -fr /var/lib/jenkins/caches/*'
+                    sh 'rm -fr /var/lib/jenkins/workspace/ry_prepare-jenkins-multipipeline/'
                 }
             }   
         }
