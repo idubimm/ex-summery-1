@@ -75,7 +75,9 @@ pipeline {
                 }
                 post{
                     always{
-                        sh 'pkill -f "python.*app.py"'      
+                        step{
+                            sh 'pkill -f "python.*app.py"'      
+                        }
                     }
                 }
             }
@@ -83,9 +85,11 @@ pipeline {
     }
     post  {
             always  {
+                step{
                         if (containerWasStarted) {
                             sh "docker stop postgers-idubi"
                         }         
+                }
             }
     }
 }
