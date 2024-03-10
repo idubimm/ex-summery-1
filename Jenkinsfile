@@ -2,13 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('clear jenkins cache') {
-            steps {
-                script {
-                    sh 'rm -fr /var/lib/jenkins/workspace/ex-summery-renewed/*'
-                }
-            }   
-        }
         stage('Setup Python Environment') {
             steps {
                 script {
