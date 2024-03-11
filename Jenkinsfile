@@ -68,7 +68,7 @@ pipeline {
                 }
             }
         }
-        stage('build docker image for flask app and push to huib'){
+        stage('build docker image for flask app and push to hub'){
                     steps{
                         script{
                             sh 'docker build -t idubi/flask-app:lts ./src/'
@@ -100,7 +100,7 @@ pipeline {
                   script {              
                         sh "docker stop postgers-idubi"
                         sh 'pkill -f "python.*src/app.py"'
-                        cleanWs()
+                        // cleanWs()
                   }
                 }
             }
