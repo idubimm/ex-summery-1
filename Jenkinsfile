@@ -21,7 +21,7 @@ pipeline {
                     // Step 1: Check if the Docker container is up and running
                     def runningContainers = sh(script: "docker ps | grep postgers-idubi | wc -l", returnStdout: true).trim()
                     // this is a flag that we follow so if we start the container , we need to stop it later
-                    containerWasStarted = false                    
+                    
                     if (runningContainers == "0") {
                         // The container is not running; check if it is stopped
                         def stoppedContainers = sh(script: "docker ps -a | grep postgers-idubi | wc -l", returnStdout: true).trim()
@@ -29,7 +29,7 @@ pipeline {
                         if (stoppedContainers != "0") {
                             // The container exists but is stopped; start the container
                             sh "docker start postgers-idubi"
-                            containerWasStarted = true
+                    
                         } else {
                             // The container does not exist; check Docker login
                             def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
@@ -43,7 +43,7 @@ pipeline {
                             
                             // Docker is logged in; run the new container
                             sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres"
-                            containerWasStarted = true
+                            
                         }
                     }
                 }
@@ -72,9 +72,7 @@ pipeline {
     post  {
             always  {  
                   script {              
-                        if (containerWasStarted) {
-                            sh "docker stop postgers-idubi"
-                        }  
+                        sh "docker stop postgers-idubi"
                         sh 'pkill -f "python.*src/app.py"'
                   }
                 }
