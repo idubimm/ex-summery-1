@@ -5,8 +5,8 @@ services:
     image: idubi/flask-app:lts
     ports:
       - "80:5000"
-    volumes:
-      - ./resources/python/templates:/app/src/templates
+    # volumes:
+    #   - ./resources/python/templates:/app/src/templates
     environment:
       DB_USER: idubi
       DB_PASSWORD: idubi
@@ -24,8 +24,8 @@ services:
       POSTGRES_DB: idubi
     ports:
       - "5432:5432"
-    volumes:
-      - ./resources/postgres/data:/var/lib/postgresql/data
+    # volumes:
+    #   - ./resources/postgres/data:/var/lib/postgresql/data
    
 
 
