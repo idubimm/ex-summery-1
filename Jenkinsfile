@@ -91,19 +91,7 @@ pipeline {
                     }
                 }
             }
-        
-        
-        // stage('check curl that app is running (after push) ') {
-        //     steps {
-        //         script {
-        //             // chek logs of application execution
-        //             sh 'sleep 10'
-        //             // def success_app_py = sh(script: "curl localhost|grep 'User Form'|wc 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
-        //             // int count_success = success_app_py.toInteger()
-                    
-        //         }
-        //     }
-        // }
+
 
 
     }
