@@ -74,6 +74,7 @@ pipeline {
                   script {              
                         sh "docker stop postgers-idubi"
                         sh 'pkill -f "python.*src/app.py"'
+                        cleanWs()
                   }
                 }
             }
