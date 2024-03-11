@@ -131,7 +131,7 @@ pipeline {
             always  {  
                   script {              
                         sh 'pkill -f "python.*src/app.py"'
-                        sh 'docker compose-down -f ./docker-compose-image.yml down'
+                        sh 'docker compose-down -f ./docker-compose-image.yml down '
                   }
                 }
             }
