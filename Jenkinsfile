@@ -89,14 +89,14 @@ pipeline {
         //         }
         //     }
         // }
-        stage('stop postgres if active and excecute dockr compose'){
-            steps{
-                script{
-                    sh 'docker-compose -f ./docker-compose-image.yml down'
-                    sh 'docker stop postgers-idubi     '
-                }
-            }
-        }
+        // stage('stop postgres if active and excecute dockr compose'){
+        //     steps{
+        //         script{
+        //             sh 'docker-compose -f ./docker-compose-image.yml down'
+        //             sh 'docker stop postgers-idubi     '
+        //         }
+        //     }
+        // }
     }
     post  {
             always  {  
