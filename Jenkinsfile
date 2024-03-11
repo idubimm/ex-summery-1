@@ -101,13 +101,11 @@ pipeline {
     post  {
             always  {  
                   script {              
-                        if (containerWasStarted) {
-                            sh "docker stop postgers-idubi"
-                        }  
+                        sh "docker stop postgers-idubi"
                         sh 'pkill -f "python.*src/app.py"'
                         // Cleanup workspace after build completion
                         cleanWs()
                   }
                 }
             }
-    }
+}
