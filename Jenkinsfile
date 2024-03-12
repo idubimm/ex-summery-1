@@ -6,6 +6,7 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 script {
+                    cleanWs()
                     // Check if the virtual environment exists, if not create it
                     if (!fileExists("venv")) {
                         sh 'python -m venv venv'
@@ -66,7 +67,8 @@ pipeline {
                     def success_app_py = sh(script: "cat app_1.log | grep 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
                     int count_success = success_app_py.toInteger()
                     if (success_app_py == "0") {
-                       sh 'echo "failed to load app"'     
+                       sh 'echo "failed to load app"' 
+                       echo     
                        return false
                     } else {
                         echo "success loading the app"
@@ -110,7 +112,7 @@ pipeline {
                   script {              
                         sh "docker stop postgers-idubi"
                         sh 'pkill -f "python.*src/app.py"'
-                       cleanWs()
+                      
                   }
                 }
             }
