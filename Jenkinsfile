@@ -6,7 +6,6 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 script {
-                    cleanWs()
                     // Check if the virtual environment exists, if not create it
                     if (!fileExists("venv")) {
                         sh 'python -m venv venv'
@@ -112,7 +111,7 @@ pipeline {
                   script {              
                         sh "docker stop postgers-idubi"
                         sh 'pkill -f "python.*src/app.py"'
-                      
+                        //  cleanWs()
                   }
                 }
             }
