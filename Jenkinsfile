@@ -73,31 +73,31 @@ pipeline {
                     sh 'echo "check application execution"'
                     def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
                     sh "echo  '0005 ---> ping result = ' ${ping_response} "
-                    if (ping_response == "pongg") {
+                    if (ping_response == "pong") {
                         echo "success loading the app"
                     } else {
                        sh 'echo "failed to load app"' 
-                       error('failed to get responce from application')
+                       error('failed to get valid response from application')
                        return false
                     }
                 }
             }
         }
-        // stage('build docker image for flask app and push to hub'){
-        //             steps{
-        //                 script{
-        //                     sh 'docker build -t idubi/flask-app:lts ./src/'
-        //                     def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
-        //                     if (loggedIn != 0) {
-        //                         // Docker is not logged in; perform login using credentials stored in Jenkins
-        //                         withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-        //                             sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-        //                         }
-        //                     }
-        //                     sh 'docker push idubi/flask-app:lts'
-        //                 }
-        //             }
-        //         }
+        stage('build docker image for flask app and push to hub'){
+                    steps{
+                        script{
+                            sh 'docker build -t idubi/flask-app:lts ./src/'
+                            def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
+                            if (loggedIn != 0) {
+                                // Docker is not logged in; perform login using credentials stored in Jenkins
+                                withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                                }
+                            }
+                            sh 'docker push idubi/flask-app:lts'
+                        }
+                    }
+                }
         // stage('test with docker compose'){
         //         steps{
         //             script{
@@ -110,11 +110,8 @@ pipeline {
     post  {
             always  {  
                   script {              
-                        sh "mkdir ${env.BUILD_NUMBER}"
                         sh 'docker stop postgres-idubi'
                         sh 'pkill -f "python.*src/app.py"'
-                        sh "mv *.log ${env.BUILD_NUMBER} "
-                        sh "mv Jenkinsfile ${env.BUILD_NUMBER} "
                   }
                 }
             }
