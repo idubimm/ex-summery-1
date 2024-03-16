@@ -109,7 +109,6 @@ pipeline {
                         sh 'pkill -f "python.*src/app.py"'
                         sh "mv *.log ${env.BUILD_NUMBER} "
                         sh "mv *nohup* ${env.BUILD_NUMBER} "
-                        sh "mv *nohup* ${env.BUILD_NUMBER} "
                         sh "mv Jenkinsfile ${env.BUILD_NUMBER} "
                   }
                 }
