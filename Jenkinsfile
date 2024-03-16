@@ -50,7 +50,7 @@ pipeline {
                             
                         }
                     } else {
-                        sh '004 ---> postgres is online '
+                        sh 'echo 004 ---> postgres is online '
                     }
                 }
             }
