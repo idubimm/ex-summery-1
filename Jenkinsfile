@@ -113,8 +113,17 @@ pipeline {
                         if (ping_response == "pong") {
                             echo "success loading the app"
                         } else {
-                            echo "failed to load app" 
-                            error('failed to get valid response from application')
+                            echo "failed to get pong result -- trying again " 
+                            start docker start flascompose_web-app
+                            sleep 10
+                            def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
+                            sh "echo  '0006 ---> ping result = ' ${ping_response} "
+                            if (ping_response == "pong") {
+                                echo "success loading the app on seccond time"
+                            } else {
+                                    echo "failed to load app" 
+                                    error('failed to get valid response from application')
+                            }
                         }
                     }
 
