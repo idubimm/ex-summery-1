@@ -17,20 +17,20 @@ pipeline {
         stage('Manage Docker Container') {
             steps {
                 script {
-                    // Step 1: Check if the Docker postgers container is up and running
-                    def runningContainers = sh(script: "docker ps | grep postgers-idubi | wc -l", returnStdout: true).trim()
+                    // Step 1: Check if the Docker postgres container is up and running
+                    def runningContainers = sh(script: "docker ps | grep postgres-idubi | wc -l", returnStdout: true).trim()
                     // this is a flag that we follow so if we start the container , we need to stop it later
                     
                     if (runningContainers == "0") {
                         // The container is not running; check if it is stopped
                         sh 'echo "000 ---> postgres is offline" '
-                        def stoppedContainers = sh(script: "docker ps -a | grep postgers-idubi | wc -l", returnStdout: true).trim()
+                        def stoppedContainers = sh(script: "docker ps -a | grep postgres-idubi | wc -l", returnStdout: true).trim()
                         
                         // postgres container available but stopped , need to start it 
                         if (stoppedContainers != "0") {
                             // The container exists but is stopped; start the container
                             sh 'echo "001 ---> postgres is offline starting stopped container " '
-                            sh "docker start postgers-idubi"
+                            sh "docker start postgres-idubi"
                     
                         } else {
                             // The container does not exist; check Docker login
@@ -46,7 +46,7 @@ pipeline {
                             
                             // Docker is logged in; run the new container
                             sh 'echo "003 ---> creating postgres image" '
-                            sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres"
+                            sh "docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres"
                             
                         }
                     } else {
@@ -102,7 +102,7 @@ pipeline {
         // stage('test with docker compose'){
         //         steps{
         //             script{
-        //             sh 'docker stop postgers-idubi'
+        //             sh 'docker stop postgres-idubi'
         //             sh 'docker-compose -f ./docker-compose-image.yml up -d'
         //             }
         //         }
@@ -112,7 +112,7 @@ pipeline {
             always  {  
                   script {              
                         sh "mkdir ${env.BUILD_NUMBER}"
-                        sh 'docker stop postgers-idubi'
+                        sh 'docker stop postgres-idubi'
                         sh 'pkill -f "python.*src/app.py"'
                         sh "mv *.log ${env.BUILD_NUMBER} "
                         sh "mv Jenkinsfile ${env.BUILD_NUMBER} "
