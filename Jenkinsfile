@@ -105,7 +105,7 @@ pipeline {
                     script{
                     sh 'docker stop postgres-idubi'
                     sh 'docker-compose -f ./docker-compose-image.yml up -d'
-
+                    sh 'docker-compose -f ./docker-compose-image.yml down'
                     }
                 }
             }
@@ -115,6 +115,7 @@ pipeline {
                   script {              
                         sh 'docker stop postgres-idubi'
                         sh 'pkill -f "python.*src/app.py"'
+                        dkc -f ./docker-compose-image.yml down
                   }
                 }
             }
