@@ -2,8 +2,6 @@ ckpipeline {
     agent any
 
     stages {
-     
-       
         stage('Setup Python Environment') {
             steps {
                 script {
@@ -74,7 +72,7 @@ ckpipeline {
                     } else {
                         echo "success loading the app"
                     }
-
+ 
                     
                 }
             }
@@ -115,7 +113,7 @@ ckpipeline {
                         sh 'pkill -f "python.*src/app.py"'
                         sh 'rm -fr *.log'
                         sh 'rm -fr *.log'
-                        sh 'rm -fr *nohup*'
+                        sh 'rm -fr nohup'
                   }
                 }
             }
