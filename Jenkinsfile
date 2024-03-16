@@ -1,7 +1,14 @@
-pipeline {
+ckpipeline {
     agent any
 
     stages {
+        stage('Initialization') {
+            steps {
+                // Your initialization steps here
+                echo 'Cleaning workspace...'
+                cleanWs()
+            }
+        }
        
         stage('Setup Python Environment') {
             steps {
@@ -13,7 +20,7 @@ pipeline {
                     // Install dependencies
                     sh '. venv/bin/activate && pip install -r ./src/requirements.txt'
                 }
-            }
+            } 
         }
         stage('Manage Docker Container') {
             steps {
