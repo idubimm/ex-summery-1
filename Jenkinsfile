@@ -127,7 +127,6 @@ pipeline {
             always  {  
                   script {              
                         sh 'docker stop postgres-idubi'
-                        sh 'pkill -f "python.*src/app.py"'
                   }
                 }
             }
