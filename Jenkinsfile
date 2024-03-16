@@ -128,6 +128,11 @@ pipeline {
             always  {  
                   script {              
                         sh 'docker stop postgres-idubi'
+                        sh 'docker stop -f flascompose_web-app'
+                        sh 'docker stop -f flascompose_postgres-db'
+                        sh 'rm -f idubi/flask-app:lts'
+                        sh 'docker-compose -f ./docker-compose-image.yml down --remove-orphans'
+                        sh 'docker-compose -p flascompose down' 
                   }
                 }
             }
