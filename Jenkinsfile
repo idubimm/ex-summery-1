@@ -110,8 +110,8 @@ pipeline {
     post  {
             always  {  
                   script {              
-                        sh "docker stop postgers-idubi"
-                        sh 'pkill -f "python.*src/app.py"'
+                        // sh "docker stop postgers-idubi"
+                        // sh 'pkill -f "python.*src/app.py"'
                         //  cleanWs()
                   }
                 }
