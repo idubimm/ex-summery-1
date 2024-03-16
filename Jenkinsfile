@@ -105,6 +105,21 @@ pipeline {
                     script{
                     sh 'docker stop postgres-idubi'
                     sh 'docker-compose -f ./docker-compose-image.yml up -d'
+                    sh 'sleep 10'
+
+                    sh 'echo "check application execution"'
+                    def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
+                    sh "echo  '0005 ---> ping result = ' ${ping_response} "
+                    if (ping_response == "pong") {
+                        echo "success loading the app"
+                        sh 'pkill -f "python.*src/app.py"'
+                        echo "force stopp running application"
+                    } else {
+                       echo "failed to load app" 
+                       error('failed to get valid response from application')
+                       return false
+                    }
+
                     sh 'docker-compose -f ./docker-compose-image.yml down'
                     }
                 }
@@ -115,7 +130,6 @@ pipeline {
                   script {              
                         sh 'docker stop postgres-idubi'
                         sh 'pkill -f "python.*src/app.py"'
-                        sh 'docker-compose -f ./docker-compose-image.yml down'
                   }
                 }
             }
