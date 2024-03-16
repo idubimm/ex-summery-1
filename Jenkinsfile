@@ -104,7 +104,7 @@ pipeline {
         //         steps{
         //             script{
         //             sh 'docker stop postgres-idubi'
-        //             sh 'docker-compose -f ./docker-compose-image.yml up -d'
+        //             sh 'docker-comp ose -f ./docker-compose-image.yml up -d'
         //             }
         //         }
         //     }
