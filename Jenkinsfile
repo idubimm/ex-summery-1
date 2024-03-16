@@ -17,16 +17,19 @@ pipeline {
         stage('Manage Docker Container') {
             steps {
                 script {
-                    // Step 1: Check if the Docker container is up and running
+                    // Step 1: Check if the Docker postgers container is up and running
                     def runningContainers = sh(script: "docker ps | grep postgers-idubi | wc -l", returnStdout: true).trim()
                     // this is a flag that we follow so if we start the container , we need to stop it later
                     
                     if (runningContainers == "0") {
                         // The container is not running; check if it is stopped
+                        sh 'echo "000 ---> postgres is offline" '
                         def stoppedContainers = sh(script: "docker ps -a | grep postgers-idubi | wc -l", returnStdout: true).trim()
                         
+                        // postgres container available but stopped , need to start it 
                         if (stoppedContainers != "0") {
                             // The container exists but is stopped; start the container
+                            sh 'echo "001 ---> postgres is offline starting stopped container " '
                             sh "docker start postgers-idubi"
                     
                         } else {
@@ -35,15 +38,19 @@ pipeline {
                             
                             if (loggedIn != 0) {
                                 // Docker is not logged in; perform login using credentials stored in Jenkins
+                                sh 'echo "002 ---> log-in to docker" '
                                 withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                                     sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
                                 }
                             }
                             
                             // Docker is logged in; run the new container
+                            sh 'echo "003 ---> creating postgres image" '
                             sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres"
                             
                         }
+                    } else {
+                        sh '004 ---> postgres is online '
                     }
                 }
             }
