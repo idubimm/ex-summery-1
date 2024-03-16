@@ -4,7 +4,7 @@ services:
   web-app:
     image: idubi/flask-app:lts
     ports:
-      - "80:5000"
+      - "5000:5000"
     environment:
       DB_USER: idubi
       DB_PASSWORD: idubi

@@ -75,8 +75,10 @@ pipeline {
                     sh "echo  '0005 ---> ping result = ' ${ping_response} "
                     if (ping_response == "pong") {
                         echo "success loading the app"
+                        pkill -f "python.*src/app.py"
+                        echo "force stopp running application"
                     } else {
-                       sh 'echo "failed to load app"' 
+                       echo "failed to load app" 
                        error('failed to get valid response from application')
                        return false
                     }
@@ -98,14 +100,15 @@ pipeline {
                         }
                     }
                 }
-        // stage('test with docker compose'){
-        //         steps{
-        //             script{
-        //             sh 'docker stop postgres-idubi'
-        //             sh 'docker-compose -f ./docker-compose-image.yml up -d'
-        //             }
-        //         }
-        //     }
+        stage('test with docker compose'){
+                steps{
+                    script{
+                    sh 'docker stop postgres-idubi'
+                    sh 'docker-compose -f ./docker-compose-image.yml up -d'
+
+                    }
+                }
+            }
     }
     post  {
             always  {  
