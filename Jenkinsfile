@@ -111,7 +111,8 @@ pipeline {
                         def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
                         sh "echo  '0006 ---> ping result = ' ${ping_response} "
                         if (ping_response == "pong") {
-                            sh 'docker-compose -f ./docker-compose-image.yml down'
+                            sh 'docker-compose -f ./docker-compose-image.yml down --remove-orphans'
+                            sh 'docker-compose -flascompose down'
                             echo "success loading the app"
                         } else {
                             echo "failed to load app" 
