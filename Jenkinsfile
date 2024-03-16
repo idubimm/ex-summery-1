@@ -77,6 +77,7 @@ pipeline {
                         echo "success loading the app"
                     } else {
                        sh 'echo "failed to load app"' 
+                       error('failed to get responce from application')
                        return false
                     }
                 }
