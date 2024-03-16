@@ -9,8 +9,6 @@ services:
         CACHEBUST: $RANDOM 
     ports:
       - "5000:5000"
-    # volumes:
-    #   - ./resources/python/templates:/app/src/templates
     environment:
       DB_USER: idubi
       DB_PASSWORD: idubi
@@ -28,8 +26,6 @@ services:
       POSTGRES_DB: idubi
     ports:
       - "5432:5432"
-    # volumes:
-    #   - ./resources/postgres/data:/var/lib/postgresql/data
    
 
 
