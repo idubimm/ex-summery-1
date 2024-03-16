@@ -73,17 +73,13 @@ pipeline {
                     sh 'echo "check application execution"'
                     def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
                     sh "echo  '0005 ---> ping result = ' ${ping_response} "
-                    def success_app_py = sh(script: "cat app_1.log | grep 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
-                    int count_success = success_app_py.toInteger()
+                    if (ping_response == "pong") 
                     if (success_app_py != "0") {
-                       sh 'echo "failed to load app"' 
-                       
-                       return false
-                    } else {
                         echo "success loading the app"
+                    } else {
+                       sh 'echo "failed to load app"' 
+                       return false
                     }
- 
-                    
                 }
             }
         }
