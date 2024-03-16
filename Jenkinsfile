@@ -104,11 +104,13 @@ pipeline {
     post  {
             always  {  
                   script {              
-                        sh "docker stop postgers-idubi"
+                        sh "mkdir ${env.BUILD_NUMBER}"
+                        sh 'docker stop postgers-idubi'
                         sh 'pkill -f "python.*src/app.py"'
-                        sh 'rm -fr *.log'
-                        sh 'rm -fr *.log'
-                        sh 'rm -fr nohup'
+                        sh "mv *.log ${env.BUILD_NUMBER} "
+                        sh "mv *nohup* ${env.BUILD_NUMBER} "
+                        sh "mv *nohup* ${env.BUILD_NUMBER} "
+                        sh "mv Jenkinsfile ${env.BUILD_NUMBER} "
                   }
                 }
             }
