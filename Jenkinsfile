@@ -129,6 +129,16 @@ pipeline {
                         if (runningPostgres == "1") {
                            sh 'docker stop postgres-idubi'
                         }
+                        def runningComposeWebApp = sh(script: "docker ps | grep flascompose_web-app | wc -l", returnStdout: true).trim()
+                        if (runningComposeWebApp == "1") {
+                           sh 'docker stop flascompose_web-app'
+                        }
+                        def runningComposePostgres = sh(script: "docker ps | grep flascompose_postgres-db | wc -l", returnStdout: true).trim()
+                        if (runningComposePostgres == "1") {
+                           sh 'docker stop flascompose_postgres-db'
+                        }
+
+
                   }
                 }
             }
