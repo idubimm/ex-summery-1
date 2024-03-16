@@ -1,6 +1,6 @@
 import os
 import time
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify , make_response
 from sqlalchemy import create_engine
 from flask_sqlalchemy import SQLAlchemy
 
@@ -64,7 +64,10 @@ def hello(name):
 
 @app.route('/ping', methods=['POST'])
 def ping():
-    return 'pong'
+    response_data = {'message': 'pong'}
+    response = make_response(jsonify(response_data), 200)
+    response.headers['X-Custom-Header'] = 'Value'
+    return response
 
 
 print (f'   (3) ---------> __name__ = {__name__}')
