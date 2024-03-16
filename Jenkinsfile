@@ -73,7 +73,7 @@ pipeline {
                     sh 'echo "check application execution"'
                     def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
                     sh "echo  '0005 ---> ping result = ' ${ping_response} "
-                    pong_reponse=$(echo $ping_response | jq -r '.message')
+                    def pong_reponse=$(echo $ping_response | jq -r '.message')
                     if ("$pong_reponse" == "pong") {
                         echo "success loading the app"
                     } else {
@@ -108,7 +108,7 @@ pipeline {
                         sh 'echo "check application execution"'
                         def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
                         sh "echo  '0006 ---> ping result = ' ${ping_response} "
-                        pong_reponse=$(echo $ping_response | jq -r '.message')
+                        def pong_reponse=$(echo $ping_response | jq -r '.message')
                         if ("$pong_reponse" == "pong") {
                             echo "success loading the app"
                         } else {
