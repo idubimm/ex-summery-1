@@ -60,7 +60,8 @@ pipeline {
             steps {
                 script {
                     // Run the Flask application in no hup so it will not ber stuck
-                    sh 'nohup python src/app.py>app_1.log&'
+                    // sh 'nohup python src/app.py>app_1.log&'
+                    sh 'python src/app.py'
                 }
             }
         }
