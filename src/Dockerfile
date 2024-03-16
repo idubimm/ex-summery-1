@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.12-bookworm
 WORKDIR /app
 COPY . /app
 RUN pip install -r requirements.txt
@@ -12,8 +12,11 @@ ENV DB_PASSWORD=idubi
 ENV DB_NAME=idubi
 ENV DB_TYPE=postgresql
 ENV DB_HOST=$DB_HOST
-# ENV DB_HOST=host.docker.internal
-# ENV DB_HOST=192.168.49.1
+# win : DB_HOST=host.docker.internal
+# lin : DB_HOST=172.17.0.1
+
+
+
 
 ENV DB_PORT=5432
 CMD ["flask", "run", "--host=0.0.0.0"]

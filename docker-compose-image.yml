@@ -2,11 +2,10 @@ version: '3'
 
 services:
   web-app:
+    container_name: flascompose_web-app
     image: idubi/flask-app:lts
     ports:
-      - "80:5000"
-    # volumes:
-    #   - ./resources/python/templates:/app/src/templates
+      - "5000:5000"
     environment:
       DB_USER: idubi
       DB_PASSWORD: idubi
@@ -16,7 +15,10 @@ services:
       DB_PORT: 5432
     depends_on:
       - postgres-db
+    networks:
+      - flask-ntwrk
   postgres-db:
+    container_name: flascompose_postgres-db
     image: postgres
     environment:
       POSTGRES_USER: idubi
@@ -24,10 +26,11 @@ services:
       POSTGRES_DB: idubi
     ports:
       - "5432:5432"
-    # volumes:
-    #   - ./resources/postgres/data:/var/lib/postgresql/data
-   
-
+    networks:
+      - flask-ntwrk   
+networks:
+  flask-ntwrk:
+    driver: bridge
 
 
 

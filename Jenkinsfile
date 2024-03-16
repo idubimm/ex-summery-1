@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-       
         stage('Setup Python Environment') {
             steps {
                 script {
@@ -13,22 +12,25 @@ pipeline {
                     // Install dependencies
                     sh '. venv/bin/activate && pip install -r ./src/requirements.txt'
                 }
-            }
+            } 
         }
         stage('Manage Docker Container') {
             steps {
                 script {
-                    // Step 1: Check if the Docker container is up and running
-                    def runningContainers = sh(script: "docker ps | grep postgers-idubi | wc -l", returnStdout: true).trim()
+                    // Step 1: Check if the Docker postgres container is up and running
+                    def runningContainers = sh(script: "docker ps | grep postgres-idubi | wc -l", returnStdout: true).trim()
                     // this is a flag that we follow so if we start the container , we need to stop it later
                     
                     if (runningContainers == "0") {
                         // The container is not running; check if it is stopped
-                        def stoppedContainers = sh(script: "docker ps -a | grep postgers-idubi | wc -l", returnStdout: true).trim()
+                        sh 'echo "000 ---> postgres is offline" '
+                        def stoppedContainers = sh(script: "docker ps -a | grep postgres-idubi | wc -l", returnStdout: true).trim()
                         
+                        // postgres container available but stopped , need to start it 
                         if (stoppedContainers != "0") {
                             // The container exists but is stopped; start the container
-                            sh "docker start postgers-idubi"
+                            sh 'echo "001 ---> postgres is offline starting stopped container " '
+                            sh "docker start postgres-idubi"
                     
                         } else {
                             // The container does not exist; check Docker login
@@ -36,15 +38,19 @@ pipeline {
                             
                             if (loggedIn != 0) {
                                 // Docker is not logged in; perform login using credentials stored in Jenkins
+                                sh 'echo "002 ---> log-in to docker" '
                                 withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                                     sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
                                 }
                             }
                             
                             // Docker is logged in; run the new container
-                            sh "docker run --name postgers-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres"
+                            sh 'echo "003 ---> creating postgres image" '
+                            sh "docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres"
                             
                         }
+                    } else {
+                        sh 'echo 004 ---> postgres is online '
                     }
                 }
             }
@@ -54,7 +60,8 @@ pipeline {
             steps {
                 script {
                     // Run the Flask application in no hup so it will not ber stuck
-                    sh 'nohup python src/app.py > app_1.log&'
+                    // sh 'nohup python src/app.py>app_1.log&'
+                    sh 'nohup python src/app.py>app_1.log&'
                 }
             }
         }
@@ -63,57 +70,65 @@ pipeline {
                 script {
                     // chek logs of application execution
                     sh 'sleep 10'
-                    sh 'echo "log for application run :"'
-                    def success_app_py = sh(script: "cat app_1.log | grep 'Running on http://127.0.0.1:5000'| wc -l", returnStdout: true).trim()
-                    int count_success = success_app_py.toInteger()
-                    if (success_app_py != "0") {
-                       sh 'echo "failed to load app"' 
-                       
-                       return false
-                    } else {
+                    sh 'echo "check application execution"'
+                    def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
+                    sh "echo  '0005 ---> ping result = ' ${ping_response} "
+                    if (ping_response == "pong") {
                         echo "success loading the app"
+                        sh 'pkill -f "python.*src/app.py"'
+                        echo "force stopp running application"
+                    } else {
+                       echo "failed to load app" 
+                       error('failed to get valid response from application')
+                       return false
                     }
-
-                    
                 }
             }
         }
-        // stage('build docker image for flask app and push to hub'){
-        //             steps{
-        //                 script{
-        //                     sh 'docker build -t idubi/flask-app:lts ./src/'
-        //                     def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
-        //                     if (loggedIn != 0) {
-        //                         // Docker is not logged in; perform login using credentials stored in Jenkins
-        //                         withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-        //                             sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-        //                         }
-        //                     }
-        //                     sh 'docker push idubi/flask-app:lts'
-        //                 }
-        //             }
-        //         }
-        // stage('test with docker compose'){
-        //         steps{
-        //             script{
-        //             sh 'docker stop postgers-idubi'
-        //             sh 'docker-compose -f ./docker-compose-image.yml up -d'
-        //             }
-        //         }
-        //     }
-        
-        
-       
+        stage('build docker image for flask app and push to hub'){
+                    steps{
+                        script{
+                            sh 'docker build -t idubi/flask-app:lts ./src/'
+                            def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
+                            if (loggedIn != 0) {
+                                // Docker is not logged in; perform login using credentials stored in Jenkins
+                                withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                                }
+                            }
+                            sh 'docker push idubi/flask-app:lts'
+                        }
+                    }
+                }
+        stage('test with docker compose'){
+                steps{
+                    script{
+                        sh 'docker stop postgres-idubi'
+                        sh 'docker-compose -f ./docker-compose-image.yml up -d'
+                        sh 'sleep 10'
+                        sh 'docker start flascompose_web-app'
+                        sh 'echo "check application execution"'
+                        def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
+                        sh "echo  '0006 ---> ping result = ' ${ping_response} "
+                        if (ping_response == "pong") {
+                            sh 'docker-compose -f ./docker-compose-image.yml down'
+                            echo "success loading the app"
+                        } else {
+                            echo "failed to load app" 
+                            sh 'docker-compose -f ./docker-compose-image.yml down'
+                            error('failed to get valid response from application')
+                        }
+                    }
 
-
+                }
+            }
     }
-    // post  {
-    //         always  {  
-    //               script {              
-    //                     sh "docker stop postgers-idubi"
-    //                     sh 'pkill -f "python.*src/app.py"'
-    //                     //  cleanWs()
-    //               }
-    //             }
-    //         }
+    post  {
+            always  {  
+                  script {              
+                        sh 'docker stop postgres-idubi'
+                        sh 'pkill -f "python.*src/app.py"'
+                  }
+                }
+            }
     }
