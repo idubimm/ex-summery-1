@@ -2,13 +2,7 @@ ckpipeline {
     agent any
 
     stages {
-        stage('Initialization') {
-            steps {
-                // Your initialization steps here
-                echo 'Cleaning workspace...'
-                cleanWs()
-            }
-        }
+     
        
         stage('Setup Python Environment') {
             steps {
@@ -119,7 +113,9 @@ ckpipeline {
                   script {              
                         sh "docker stop postgers-idubi"
                         sh 'pkill -f "python.*src/app.py"'
-                        //cleanWs()
+                        sh 'rm -fr *.log'
+                        sh 'rm -fr *.log'
+                        sh 'rm -fr *nohup*'
                   }
                 }
             }
