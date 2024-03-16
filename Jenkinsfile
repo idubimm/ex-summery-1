@@ -111,12 +111,9 @@ pipeline {
                         def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
                         sh "echo  '0006 ---> ping result = ' ${ping_response} "
                         if (ping_response == "pong") {
-                            sh 'docker-compose -f ./docker-compose-image.yml down --remove-orphans'
-                            sh 'docker-compose -flascompose down'
                             echo "success loading the app"
                         } else {
                             echo "failed to load app" 
-                            sh 'docker-compose -f ./docker-compose-image.yml down'
                             error('failed to get valid response from application')
                         }
                     }
@@ -127,12 +124,11 @@ pipeline {
     post  {
             always  {  
                   script {              
-                        sh 'docker stop postgres-idubi'
-                        sh 'docker stop -f flascompose_web-app'
-                        sh 'docker stop -f flascompose_postgres-db'
-                        sh 'rm -f idubi/flask-app:lts'
                         sh 'docker-compose -f ./docker-compose-image.yml down --remove-orphans'
-                        sh 'docker-compose -p flascompose down' 
+                        def runningPostgres = sh(script: "docker ps | grep postgres-idubi | wc -l", returnStdout: true).trim()
+                        if (runningPostgres == "1") {
+                           sh 'docker stop postgres-idubi'
+                        }
                   }
                 }
             }
