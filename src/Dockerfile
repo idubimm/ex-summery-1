@@ -4,6 +4,7 @@ COPY . /app
 RUN pip install -r requirements.txt
 RUN apt-get update && \
     apt-get install -y postgresql-client && \
+    apt-get install jq \
     rm -rf /var/lib/apt/lists/*
 EXPOSE 5000
 
