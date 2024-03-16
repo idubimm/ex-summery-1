@@ -1,5 +1,0 @@
-failed to get console mode for stdin: The handle is invalid.
-failed to get console mode for stdout: The handle is invalid.
- * Debug mode: off
- * Debug mode: off
- * Debug mode: off
