@@ -75,7 +75,7 @@ pipeline {
                     sh "echo  '0005 ---> ping result = ' ${ping_response} "
                     if (ping_response == "pong") {
                         echo "success loading the app"
-                        pkill -f "python.*src/app.py"
+                        sh 'pkill -f "python.*src/app.py"'
                         echo "force stopp running application"
                     } else {
                        echo "failed to load app" 
