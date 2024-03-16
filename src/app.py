@@ -64,8 +64,7 @@ def hello(name):
 
 @app.route('/ping', methods=['POST'])
 def ping():
-    # return 'pong'
-    response_data = {'message':'pong'}
+    response_data = 'pong'
     response = make_response(jsonify(response_data), 200)
     response.headers['X-Custom-Header'] = 'Value'
     return response
