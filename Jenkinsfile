@@ -1,4 +1,4 @@
-ckpipeline {
+pipeline {
     agent any
 
     stages {
@@ -100,11 +100,6 @@ ckpipeline {
         //             }
         //         }
         //     }
-        
-        
-       
-
-
     }
     post  {
             always  {  
