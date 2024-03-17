@@ -119,15 +119,15 @@ pipeline {
 
         //         }
         //     }    
-        stage('execute in kubernates'){
-                steps{
-                    script{
-                        sh 'kubectl apply -f ./kubernetes/'   
-                        sh 'minikube service web-app --namespace flaskapp-python'
-                    }
+        // stage('execute in kubernates'){
+        //         steps{
+        //             script{
+        //                 sh 'kubectl apply -f ./kubernetes/'   
+        //                 sh 'minikube service web-app --namespace flaskapp-python'
+        //             }
 
-                }
-            }
+        //         }
+        //     }
     }
 
     post  {
