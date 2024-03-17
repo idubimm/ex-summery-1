@@ -121,8 +121,8 @@ pipeline {
         //         }
         //     }    
         stage('execute in kubernates'){
+                agent windows-agent
                 steps{
-                    agent windows-agent
                     script{
                         sh 'kubectl apply -f ./kubernetes/'   
                         sh 'minikube service web-app --namespace flaskapp-python'
