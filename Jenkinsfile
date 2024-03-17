@@ -121,7 +121,7 @@ pipeline {
         //         }
         //     }    
         stage('execute in kubernates'){
-                agent windows-agent
+                agent "windows-agent"
                 steps{
                     script{
                         sh 'kubectl apply -f ./kubernetes/'   
