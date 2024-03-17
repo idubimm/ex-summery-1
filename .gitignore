@@ -32,3 +32,15 @@ work/
 aws/static-website-example-master/
 aws/static-website-example-master/test  
 
+# terraform
+*/.terraform/*
+*.lock
+*.lock.*
+terraform.tfsafe
+.history
+terraform/.terraform/
+*.exe
+.terraform
+.terraform/
+
+

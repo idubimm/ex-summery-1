@@ -31,7 +31,6 @@ pipeline {
                             // The container exists but is stopped; start the container
                             sh 'echo "001 ---> postgres is offline starting stopped container " '
                             sh "docker start postgres-idubi"
-                    
                         } else {
                             // The container does not exist; check Docker login
                             def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
@@ -100,34 +99,53 @@ pipeline {
                         }
                     }
                 }
-        stage('test with docker compose'){
-                steps{
-                    script{
-                        sh 'docker stop postgres-idubi'
-                        sh 'docker-compose -f ./docker-compose-image.yml up -d'
-                        sh 'sleep 10'
-                        sh 'docker start flascompose_web-app'
-                        sh 'echo "check application execution"'
-                        def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
-                        sh "echo  '0006 ---> ping result = ' ${ping_response} "
-                        if (ping_response == "pong") {
-                            sh 'docker-compose -f ./docker-compose-image.yml down'
-                            echo "success loading the app"
-                        } else {
-                            echo "failed to load app" 
-                            sh 'docker-compose -f ./docker-compose-image.yml down'
-                            error('failed to get valid response from application')
-                        }
-                    }
+        // stage('test with docker compose'){
+        //         steps{
+        //             script{
+        //                 sh 'docker stop postgres-idubi'
+        //                 sh 'docker-compose -f ./docker-compose-image.yml up -d'
+        //                 sh 'sleep 10'
+        //                 sh 'docker start flascompose_web-app'
+        //                 sh 'echo "check application execution"'
+        //                 def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
+        //                 sh "echo  '0006 ---> ping result = ' ${ping_response} "
+        //                 if (ping_response == "pong") {
+        //                     echo "success loading the app"
+        //                 } else {
+        //                     echo "failed to load app" 
+        //                     error('failed to get valid response from application')
+        //                 }
+        //             }
 
-                }
-            }
+        //         }
+        //     }    
+        // stage('execute in kubernates'){
+        //         steps{
+        //             script{
+        //                 sh 'kubectl apply -f ./kubernetes/'   
+        //                 sh 'minikube service web-app --namespace flaskapp-python'
+        //             }
+
+        //         }
+        //     }
     }
+
     post  {
             always  {  
                   script {              
-                        sh 'docker stop postgres-idubi'
-                        sh 'pkill -f "python.*src/app.py"'
+                        sh 'docker-compose -f ./docker-compose-image.yml down --remove-orphans'
+                        def runningPostgres = sh(script: "docker ps | grep postgres-idubi | wc -l", returnStdout: true).trim()
+                        if (runningPostgres == "1") {
+                           sh 'docker stop postgres-idubi'
+                        }
+                        def runningComposeWebApp = sh(script: "docker ps | grep flascompose_web-app | wc -l", returnStdout: true).trim()
+                        if (runningComposeWebApp == "1") {
+                           sh 'docker stop flascompose_web-app'
+                        }
+                        def runningComposePostgres = sh(script: "docker ps | grep flascompose_postgres-db | wc -l", returnStdout: true).trim()
+                        if (runningComposePostgres == "1") {
+                           sh 'docker stop flascompose_postgres-db'
+                        }
                   }
                 }
             }
