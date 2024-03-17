@@ -119,9 +119,8 @@ pipeline {
                     }
 
                 }
-            }
-    }
-  stage('execute in kubernates'){
+            }    
+        stage('execute in kubernates'){
                 steps{
                     agent 
                     script{
@@ -131,8 +130,7 @@ pipeline {
 
                 }
             }
-    
-
+    }
 
     post  {
             always  {  
