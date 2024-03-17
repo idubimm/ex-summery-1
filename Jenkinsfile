@@ -31,7 +31,6 @@ pipeline {
                             // The container exists but is stopped; start the container
                             sh 'echo "001 ---> postgres is offline starting stopped container " '
                             sh "docker start postgres-idubi"
-                    
                         } else {
                             // The container does not exist; check Docker login
                             def loggedIn = sh(script: "docker info | grep -i 'Username' || true", returnStatus: true)
