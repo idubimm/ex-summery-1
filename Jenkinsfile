@@ -121,6 +121,19 @@ pipeline {
                 }
             }
     }
+  stage('execute in kubernates'){
+                steps{
+                    agent 
+                    script{
+                        sh 'kubectl apply -f ./kubernetes/'  
+                        sh 'minikube service web-app --namespace flaskapp-python'
+                    }
+
+                }
+            }
+    }
+
+
     post  {
             always  {  
                   script {              
