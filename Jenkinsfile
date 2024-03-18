@@ -17,9 +17,11 @@ pipeline {
         stage('Manage Docker Container') {
             steps {
                 script {
-                        sh 'chmod -R +x ./scripts'
-                        sh './scripts/docker-utils.sh'
+                        sh '''
+                        chmod -R +x ./scripts
+                        source './scripts/docker-utils.sh'
                         prepare_docker_container 'postgres-idubi'
+                        '''
                 }
             }
         }
