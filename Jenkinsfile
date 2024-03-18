@@ -31,7 +31,7 @@ pipeline {
                 }
             }
         }
-    }
+    
     stage('build Flask Application') {
         steps {
             script {
