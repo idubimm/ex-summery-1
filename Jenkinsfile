@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                         source ./script/docker-utils.sh
-                        if (! verify_container_up 'postgres-idubi') then 
+                        if (! verify_container_up 'postgres-idubi') ;then 
                           if (! verify_container_available 'postgres-idubi' ) then 
                             if (verify_image_exist 'postgres' ) then 
                                docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres
