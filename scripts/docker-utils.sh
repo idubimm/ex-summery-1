@@ -79,13 +79,13 @@ prepare_docker_container() {
     if (verify_container_up $DOCKERCONTAINER) ; then
         return 0
     else
-        if [[ verify_container_available $DOCKERCONTAINER ]]; then
+        if (verify_container_available $DOCKERCONTAINER) ; then
             docekr start $DOCKERCONTAINER
         else
-            if [[ verify_image_exist $IMAGENAME ]]; then
+            if (verify_image_exist $IMAGENAME) ; then
                 docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres                
             else
-                if [[ verify_docker_login $USER $PASS ]]; then
+                if (verify_docker_login $USER $PASS) ; then
                    docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres                 
                    return 0
                 else 
