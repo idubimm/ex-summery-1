@@ -35,9 +35,9 @@ pipeline {
         {
             steps {
                 script {
-                    // Run the Flask application in no hup so it will not ber stuck
-                    // sh 'nohup python src/app.py>app_1.log&'
-                    sh 'nohup python src/app.py>app_1.log&'
+                        // Run the Flask application in no hup so it will not ber stuck
+                        // sh 'nohup python src/app.py>app_1.log&'
+                        sh 'nohup python src/app.py>app_1.log&'
                 }
             }
         }
@@ -45,16 +45,17 @@ pipeline {
         {
             steps {
                 script {
-                    sh '''#!/bin/bash
-                    source scripts/test-flask-app.sh
-                    validate_flask_in_loop "http://127.0.0.1:50000" 5 1                       
-                    '''
-                    }
+                        sh '''#!/bin/bash
+                        source scripts/test-flask-app.sh
+                        validate_flask_in_loop "http://127.0.0.1:5000" 5 1  
+                        # kill the application after test completed
+                        pkill -f "python.*src/app.py"                     
+                        '''
                 }
             }
-    }
-}
-        // stage('check logs to see app running') {
+            }
+    
+        // stage('build docker image for tests') {
         //     steps {
         //         script {
         //             // chek logs of application execution
@@ -74,7 +75,9 @@ pipeline {
         //         }
         //     }
         // }
-        // stage('build docker image for flask app and push to hub'){
+    }
+}        
+        // stage('build docker image for flask '){
         //             steps{
         //                 script{
         //                     sh 'docker build -t idubi/flask-app:lts ./src/'
