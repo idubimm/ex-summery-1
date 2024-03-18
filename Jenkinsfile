@@ -17,10 +17,12 @@ pipeline {
         stage('Manage Docker Container') {
             steps {
                 script {
+                        withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) 
                         sh '''#!/bin/bash
                         chmod -R +x ./scripts
                         source scripts/docker-utils.sh
-                        prepare_docker_container "postgres-idubi"
+
+                        prepare_docker_container "postgres-idubi" $DOCKER_USERNAME $DOCKER_PASSWORD
                         '''
                 }
             }
