@@ -73,6 +73,7 @@ verify_container_available(){
 prepare_docker_container() {
     DOCKERCONTAINER=$1 
     echo 'inside prepare docekr container $DOCKERCONTAINER '
+    return 0
 }
 
 #  if (! verify_container_up 'postgres-idubi') ;then 
