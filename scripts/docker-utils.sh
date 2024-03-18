@@ -72,7 +72,7 @@ verify_container_available(){
 
 prepare_docker_container() {
     DOCKERCONTAINER=$1 
-    echo 'inside prepare docekr container $DOCKERCONTAINER '
+    echo "inside prepare docekr container $DOCKERCONTAINER "
     return 0
 }
 
