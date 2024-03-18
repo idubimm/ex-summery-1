@@ -22,6 +22,8 @@ pipeline {
                 }
             }
         }
+    }
+    }
           
         // stage('buil Flask Application') {
         //     steps {
@@ -96,25 +98,25 @@ pipeline {
 
         //         }
         //     }
-    }
+    // }
 
-    post  {
-            always  {  
-                  script {              
-                        sh 'docker-compose -f ./docker-compose-image.yml down --remove-orphans'
-                        def runningPostgres = sh(script: "docker ps | grep postgres-idubi | wc -l", returnStdout: true).trim()
-                        if (runningPostgres == "1") {
-                           sh 'docker stop postgres-idubi'
-                        }
-                        def runningComposeWebApp = sh(script: "docker ps | grep flascompose_web-app | wc -l", returnStdout: true).trim()
-                        if (runningComposeWebApp == "1") {
-                           sh 'docker stop flascompose_web-app'
-                        }
-                        def runningComposePostgres = sh(script: "docker ps | grep flascompose_postgres-db | wc -l", returnStdout: true).trim()
-                        if (runningComposePostgres == "1") {
-                           sh 'docker stop flascompose_postgres-db'
-                        }
-                  }
-                }
-            }
-    }
+    // post  {
+    //         always  {  
+    //               script {              
+    //                     sh 'docker-compose -f ./docker-compose-image.yml down --remove-orphans'
+    //                     def runningPostgres = sh(script: "docker ps | grep postgres-idubi | wc -l", returnStdout: true).trim()
+    //                     if (runningPostgres == "1") {
+    //                        sh 'docker stop postgres-idubi'
+    //                     }
+    //                     def runningComposeWebApp = sh(script: "docker ps | grep flascompose_web-app | wc -l", returnStdout: true).trim()
+    //                     if (runningComposeWebApp == "1") {
+    //                        sh 'docker stop flascompose_web-app'
+    //                     }
+    //                     def runningComposePostgres = sh(script: "docker ps | grep flascompose_postgres-db | wc -l", returnStdout: true).trim()
+    //                     if (runningComposePostgres == "1") {
+    //                        sh 'docker stop flascompose_postgres-db'
+    //                     }
+    //               }
+    //             }
+    //         }
+    // }
