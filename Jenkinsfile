@@ -76,7 +76,7 @@ pipeline {
                         //  load docker credentials agin
                         sh '''#!/bin/bash
                         source scripts/docker-utils.sh 
-                        execute_docker_compose  './docker-compose-image.yml'  'idubi/flask-crud:lts' 'flasc-compose'
+                        build_docker_compose  './docker-compose-image.yml'  'idubi/flask-crud:lts' 'flasc-compose'
                         '''
                 }
             }
