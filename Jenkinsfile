@@ -18,24 +18,7 @@ pipeline {
             steps {
                 script {
                         source ./scripts/docker-utils.sh
-                        if (! verify_container_up 'postgres-idubi') ;then 
-                          if (! verify_container_available 'postgres-idubi' ) then 
-                            if (verify_image_exist 'postgres' ) then 
-                               docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres
-                            ; else  // the image doens not exists need to login
-                             withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                                    sh "verify_docker_login ($DOCKER_USERNAME $DOCKER_PASSWORD)"
-                                }
-                                // run the image after login
-                             docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres
-                          ; else // the image available but container not available
-                          docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres
-                        ; else  // the cintainer availabel but stopped
-                        docker start postgres-idubi
-                        // postgres container available but stopped , need to start it 
-                    } else {
-                        sh 'echo ---> postgres is online '
-                    }
+                        prepare_docker_image 'postgres-idubi'
                 }
             }
         }
