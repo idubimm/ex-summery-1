@@ -14,13 +14,14 @@ pipeline {
                 }
             } 
         }
-        stage('Manage Docker Container') {
+        stage('Manage Docker Container - prior condition posgres db need to be up') {
             steps {
                 script {
                         withCredentials([usernamePassword(credentialsId: 'docker-idubi' , usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                                     sh '''#!/bin/bash
                                           chmod -R +x ./scripts
                                           source scripts/docker-utils.sh 
+                                          # [1. container name]  [2. image name]  [3. docker run command if no container] [4,5 - docker credentials]
                                           prepare_docker_container "postgres-idubi" \
                                                   "postgres"  \
                                                   "docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres" \
@@ -47,7 +48,8 @@ pipeline {
                 script {
                         sh '''#!/bin/bash
                         source scripts/test-flask-app.sh
-                        validate_flask_in_loop "http://127.0.0.1:5000" 5 1  
+                                                [1.flask app endpoint]   [2.#retries]  [3.interval secconds]
+                        validate_flask_in_loop "http://127.0.0.1:5000"     5               1  
                         # kill the application after test completed
                         pkill -f "python.*src/app.py"                     
                         '''
@@ -62,7 +64,8 @@ pipeline {
                     {
                     sh '''#!/bin/bash
                     source scripts/docker-utils.sh 
-                    build_docker_image 'flask-crud' 'idubi' './src/' 
+                    #                 [1. app name]   [2. domain]  [3.dockerfile path]
+                    build_docker_image 'flask-crud'     'idubi'       './src/' 
                     '''
                     }
                 }
@@ -76,7 +79,8 @@ pipeline {
                         //  load docker credentials agin
                         sh '''#!/bin/bash
                         source scripts/docker-utils.sh 
-                        build_docker_compose  './docker-compose-image.yml'  'idubi/flask-crud:lts' 'flasc-compose'
+                        #                        [1. compose file path]         [2. docker build name]  [3. compose image prefix]
+                        build_docker_compose  './src/docker-compose-image.yml'  'idubi/flask-crud:lts' 'flasc-compose'
                         '''
                 }
             }

@@ -102,7 +102,7 @@ prepare_docker_container() {
 
 build_docker_image() {
     DOMAIN=$1
-    REPONAME=$1
+    REPONAME=$2
     PATHTODOCKERFILE=$3
     
     verify_docker_login  $USER $PASSWORD
