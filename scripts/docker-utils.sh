@@ -73,6 +73,9 @@ verify_container_available(){
 prepare_docker_container() {
     DOCKERCONTAINER=$1 
     echo "inside prepare docekr container $DOCKERCONTAINER "
+      withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                verify_docker_login ($DOCKER_USERNAME $DOCKER_PASSWORD)
+          }
     return 0
 }
 
