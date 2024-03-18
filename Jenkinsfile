@@ -70,13 +70,15 @@ pipeline {
         }
         stage('test sanity on created docker image with docker compose')       
         {
-            script{
-                    //  we allready arive here after logged into docker so no need to 
-                    //  load docker credentials agin
-                    sh '''#!/bin/bash
-                    source scripts/docker-utils.sh 
-                    execute_docker_compose  './docker-compose-image.yml'  'idubi/flask-crud:lts' 'flasc-compose'
-                    '''
+            steps {
+                script{
+                        //  we allready arive here after logged into docker so no need to 
+                        //  load docker credentials agin
+                        sh '''#!/bin/bash
+                        source scripts/docker-utils.sh 
+                        execute_docker_compose  './docker-compose-image.yml'  'idubi/flask-crud:lts' 'flasc-compose'
+                        '''
+                }
             }
         }
     }
