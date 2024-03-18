@@ -31,17 +31,18 @@ pipeline {
                 }
             }
         }
-    
-    stage('build Flask Application') {
-        steps {
-            script {
-                // Run the Flask application in no hup so it will not ber stuck
-                // sh 'nohup python src/app.py>app_1.log&'
-                sh 'nohup python src/app.py>app_1.log&'
+        stage('build Flask Application') 
+        {
+            steps {
+                script {
+                    // Run the Flask application in no hup so it will not ber stuck
+                    // sh 'nohup python src/app.py>app_1.log&'
+                    sh 'nohup python src/app.py>app_1.log&'
+                }
             }
         }
-    }
-    stage('test sanity for application') {
+        stage('test sanity for application') 
+        {
             steps {
                 script {
                     sh '''
@@ -51,6 +52,7 @@ pipeline {
                     }
                 }
             }
+    }
 }
         // stage('check logs to see app running') {
         //     steps {
