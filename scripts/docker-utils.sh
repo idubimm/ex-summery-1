@@ -82,7 +82,7 @@ prepare_docker_container() {
         return 0
     else
         if (verify_container_available $DOCKERCONTAINER) ; then
-            echo `docekr start $DOCKERCONTAINER`
+            echo `"docekr start $DOCKERCONTAINER"`
         else
             if (verify_image_exist $IMAGENAME) ; then
                  echo `$COMMAND`
