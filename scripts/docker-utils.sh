@@ -75,7 +75,7 @@ prepare_docker_container() {
     USER=$2
     PASS=$3
     echo "inside prepare docekr container $DOCKERCONTAINER $USER $PASS "
-     
+    verify_docker_login $USER $PASS
     return 0
 }
 
