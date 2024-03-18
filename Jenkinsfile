@@ -32,17 +32,26 @@ pipeline {
             }
         }
     }
+    stage('build Flask Application') {
+        steps {
+            script {
+                // Run the Flask application in no hup so it will not ber stuck
+                // sh 'nohup python src/app.py>app_1.log&'
+                sh 'nohup python src/app.py>app_1.log&'
+            }
+        }
     }
-          
-        // stage('buil Flask Application') {
-        //     steps {
-        //         script {
-        //             // Run the Flask application in no hup so it will not ber stuck
-        //             // sh 'nohup python src/app.py>app_1.log&'
-        //             sh 'nohup python src/app.py>app_1.log&'
-        //         }
-        //     }
-        // }
+    stage('test sanity for application') {
+            steps {
+                script {
+                    sh '''
+                    source ./scripts/test-flask-app.sh
+                    validate_flask_in_loop "http://127.0.0.1:50000" 5 1)                       
+                    '''
+                    }
+                }
+            }
+}
         // stage('check logs to see app running') {
         //     steps {
         //         script {
