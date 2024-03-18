@@ -76,7 +76,7 @@ prepare_docker_container() {
     USER=$2
     PASS=$3
     echo "inside prepare docekr container $DOCKERCONTAINER $USER $PASS "
-    if [[ verify_container_up $DOCKERCONTAINER]]; then
+    if (verify_container_up $DOCKERCONTAINER) ; then
         return 0
     else
         if [[ verify_container_available $DOCKERCONTAINER ]]; then
