@@ -19,8 +19,8 @@ pipeline {
                 script {
                         sh '''
                         chmod -R +x ./scripts
-                        source './scripts/docker-utils.sh'
-                        prepare_docker_container 'postgres-idubi'
+                        ./scripts/docker-utils.sh
+                        prepare_docker_container "postgres-idubi"
                         '''
                 }
             }
