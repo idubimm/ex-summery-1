@@ -114,11 +114,16 @@ build_docker_image() {
 build_docker_compose() {
     DOCKERCOMPOSEFILE=$1
     APPNAME=$2
-    export COMPOSE_IMAGE_NAME=$APPNAME
+    COMPOSENAME=$3
+
+    export FLASK_BUILD_NAME=$APPNAME
+    export COMPOSE_NAME=$COMPOSENAME
+    
     echo `docker-compose -f $DOCKERCOMPOSEFILE  up -d`
 }
 
 stop_docker_compose() {
     DOCKERCOMPOSEFILE=$1
+    COMPOSENAME=$2
     echo `docker-compose -f $DOCKERCOMPOSEFILE down`
 }
