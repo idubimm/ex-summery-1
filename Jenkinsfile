@@ -19,9 +19,9 @@ pipeline {
                 script {
                         sh '''#!/bin/bash
                         chmod -R +x ./scripts
-                        source scripts/docker-utils.sh'''
+                        
                         withCredentials([usernamePassword(credentialsId: 'docker-idubi' , usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                                    sh "prepare_docker_container "postgres-idubi" $DOCKER_USERNAME $DOCKER_PASSWORD"
+                                    sh "source scripts/docker-utils.sh && prepare_docker_container "postgres-idubi" $DOCKER_USERNAME $DOCKER_PASSWORD"
                                 }
                        
                 }
