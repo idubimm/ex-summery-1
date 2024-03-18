@@ -21,11 +21,10 @@ pipeline {
                                     sh '''#!/bin/bash
                                           chmod -R +x ./scripts
                                           source scripts/docker-utils.sh 
-                                          prepare_docker_container 
-                                                  "postgres-idubi" 
-                                                  "postgres" 
-                                                  "docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres" 
-                                                  $DOCKER_USERNAME 
+                                          prepare_docker_container "postgres-idubi" \
+                                                  "postgres"  \
+                                                  "docker run --name postgres-idubi -e POSTGRES_USER=idubi -e POSTGRES_PASSWORD=idubi -d -p 5432:5432 postgres" \
+                                                  $DOCKER_USERNAME \
                                                   $DOCKER_PASSWORD 
                                        '''                                    
                                 }
