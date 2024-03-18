@@ -53,30 +53,23 @@ pipeline {
                         '''
                 }
             }
-            }
-    
-        // stage('build docker image for tests') {
-        //     steps {
-        //         script {
-        //             // chek logs of application execution
-        //             sh 'sleep 10'
-        //             sh 'echo "check application execution"'
-        //             def ping_response = sh(script: "curl -X POST http://localhost:5000/ping -H 'Content-Type: application/json' -d '{''message'':''ping''}'", returnStdout: true).trim()
-        //             sh "echo  '0005 ---> ping result = ' ${ping_response} "
-        //             if (ping_response == "pong") {
-        //                 echo "success loading the app"
-        //                 sh 'pkill -f "python.*src/app.py"'
-        //                 echo "force stopp running application"
-        //             } else {
-        //                echo "failed to load app" 
-        //                error('failed to get valid response from application')
-        //                return false
-        //             }
-        //         }
-        //     }
-        // }
+        }
+        stage('build docker image ') 
+        {
+            steps {
+                script {
+                    // chek logs of application execution
+                    sh '''#!/bin/bash
+                    source scripts/docker-utils.sh 
+                    build_docker_image 'flask-crud' 'idubi' './src/' 
+                    '''
+                    }
+                }
+            
+        }        
     }
-}        
+}     
+        
         // stage('build docker image for flask '){
         //             steps{
         //                 script{

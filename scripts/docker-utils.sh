@@ -99,3 +99,13 @@ prepare_docker_container() {
     fi
     return 0
 }
+
+build_docker_image() {
+    DOMAIN=$1
+    REPONAME=$1
+    PATHTODOCKERFILE=$3
+
+    # 'flask-crud' $DOCKER_USERNAME $DOCKER_PASSWORD
+    echo `docker rmi -f   "$DOMAIN/$REPONAME:lts"`
+    echo `docker build -t "$DOMAIN/$REPONAME:lts" $PATHTODOCKERFILE`
+} 
