@@ -17,7 +17,9 @@ pipeline {
         stage('Manage Docker Container') {
             steps {
                 script {
-                        withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) 
+                        withCredentials([usernamePassword(credentialsId: 'idubi_docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]){
+                            echo 'retrieve docker credentials'
+                        } 
                         sh '''#!/bin/bash
                         chmod -R +x ./scripts
                         source scripts/docker-utils.sh
