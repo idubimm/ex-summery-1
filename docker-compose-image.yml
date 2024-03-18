@@ -2,8 +2,8 @@ version: '3'
 
 services:
   web-app:
-    container_name: flascompose_web-app
-    image: idubi/flask-app:lts
+    container_name: $COMPOSE_NAME
+    image: $FLASK_BUILD_NAME
     ports:
       - "5000:5000"
     environment:

@@ -110,3 +110,15 @@ build_docker_image() {
     echo `docker rmi -f   "$DOMAIN/$REPONAME:lts"`
     echo `docker build -t "$DOMAIN/$REPONAME:lts" $PATHTODOCKERFILE`
 } 
+
+build_docker_compose() {
+    DOCKERCOMPOSEFILE=$1
+    APPNAME=$2
+    export COMPOSE_IMAGE_NAME=$APPNAME
+    echo `docker-compose -f $DOCKERCOMPOSEFILE  up -d`
+}
+
+stop_docker_compose() {
+    DOCKERCOMPOSEFILE=$1
+    echo `docker-compose -f $DOCKERCOMPOSEFILE down`
+}
