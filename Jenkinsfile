@@ -17,7 +17,7 @@ pipeline {
         stage('Manage Docker Container') {
             steps {
                 script {
-                        source ./script/docker-utils.sh
+                        source ./scripts/docker-utils.sh
                         if (! verify_container_up 'postgres-idubi') ;then 
                           if (! verify_container_available 'postgres-idubi' ) then 
                             if (verify_image_exist 'postgres' ) then 
