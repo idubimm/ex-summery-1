@@ -17,7 +17,7 @@ pipeline {
         stage('Manage Docker Container') {
             steps {
                 script {
-                        source ./scripts/docker-utils.sh
+                         sh 'source ./scripts/docker-utils.sh'
                         prepare_docker_image 'postgres-idubi'
                 }
             }
