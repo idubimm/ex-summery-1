@@ -17,15 +17,13 @@ pipeline {
         stage('Manage Docker Container') {
             steps {
                 script {
-                         withCredentials([usernamePassword(credentialsId: 'docker-idubi' , usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                                }
                         sh '''#!/bin/bash
                         chmod -R +x ./scripts
-                        source scripts/docker-utils.sh
-
-                        prepare_docker_container "postgres-idubi" $DOCKER_USERNAME $DOCKER_PASSWORD
-                        '''
+                        source scripts/docker-utils.sh'''
+                        withCredentials([usernamePassword(credentialsId: 'docker-idubi' , usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                    sh "prepare_docker_container "postgres-idubi" $DOCKER_USERNAME $DOCKER_PASSWORD"
+                                }
+                       
                 }
             }
         }
