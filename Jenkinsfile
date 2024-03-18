@@ -58,17 +58,19 @@ pipeline {
         {
             steps {
                 script {
-                    // chek logs of application execution
+                    withCredentials([usernamePassword(credentialsId: 'docker-idubi' , usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) 
+                    {
                     sh '''#!/bin/bash
                     source scripts/docker-utils.sh 
                     build_docker_image 'flask-crud' 'idubi' './src/' 
                     '''
                     }
                 }
-            
+            }            
         }        
     }
 }     
+
         
         // stage('build docker image for flask '){
         //             steps{
