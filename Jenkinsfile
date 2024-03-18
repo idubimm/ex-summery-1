@@ -64,8 +64,8 @@ pipeline {
                     {
                     sh '''#!/bin/bash
                     source scripts/docker-utils.sh 
-                    #                 [1. app name]   [2. domain]  [3.dockerfile path]
-                    build_docker_image 'flask-crud'     'idubi'       './src/' 
+                    #                   [1. domain]   [2. app name]     [3.dockerfile path]
+                    build_docker_image   'idubi'      'flask-crud'       './src/' 
                     '''
                     }
                 }
