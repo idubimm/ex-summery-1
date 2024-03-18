@@ -45,9 +45,8 @@ pipeline {
         {
             steps {
                 script {
-                    sh '''
-                    #!/bin/bash
-                    source ./scripts/test-flask-app.sh
+                    sh '''#!/bin/bash
+                    source scripts/test-flask-app.sh
                     validate_flask_in_loop "http://127.0.0.1:50000" 5 1)                       
                     '''
                     }
