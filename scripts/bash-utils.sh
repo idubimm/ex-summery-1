@@ -5,6 +5,7 @@ loop-until-success() {
     MAXATTEMPTS=$2 
     INTERVAL=$3
 
+    echo "loop-until-success -> command to execute = $COMMAND2EXECUTE"
 
 
     # Current attempt counter

@@ -6,8 +6,7 @@
 validate_flask_execution() {
     
     URL=$1 
-   
-
+    echo "validate_flask_execution -> URL= $URL"
                 
     response_body=$(curl --location --request POST "$URL/ping" -s -w '\n%{http_code}' -o -)
     http_status=$(echo "$response_body" | tail -n1)
