@@ -47,15 +47,9 @@ pipeline {
             steps {
                 script {
                         sh '''#!/bin/bash
-                        source scripts/bash-utils.sh
                         source scripts/test-flask-app.sh
                                                 [1.flask app endpoint]   [2.#retries]  [3.interval secconds]
-                        executeion_result=loop-until-success  'validate_flask_execution "http://127.0.0.1:5000"'     5               1  
-                        echo "executeion_result --> $executeion_result"
-                        if [ $executeion_result -eq "1" ]; then 
-                            pkill -f "python.*src/app.py"                       
-                            error('failed to test flask execution.')
-                        fi
+                        validate_flask_in_loop "http://127.0.0.1:5000"     5               1  
                         # kill the application after test completed
                         pkill -f "python.*src/app.py"                     
                         '''
@@ -75,7 +69,7 @@ pipeline {
                     #               [1.  container name ]
                     stop_container 'postgres-idubi'
                     #                   [1. domain]   [2. app name]     [3.dockerfile path]
-                    build_docker_image   'idubi'      'flask-crud'       './src/' 
+                    build_docker_image   ''      'flask-crud'       './src/' 
                     '''
                     }
                 }
@@ -100,10 +94,9 @@ pipeline {
             steps {
                 script {
                         sh '''#!/bin/bash
-                        source scripts/bash-utils.sh
                         source scripts/test-flask-app.sh
                                                 [1.flask app endpoint]   [2.#retries]  [3.interval secconds]
-                        loop-until-success  'validate_flask_execution "http://127.0.0.1:5000"'     5               1  
+                        validate_flask_in_loop "http://127.0.0.1:5000"     5               1  
                         source scripts/docker-utils.sh
                         stop_docker_compose 'src/docker-compose-image.yml'
                         '''                        
