@@ -67,7 +67,7 @@ pipeline {
                     # since we are connecting to the db in docker compose with same port as the db , 
                     # and we open it for tests in host - we need to stop db (port is already allocated error)
                     #               [1.  container name ]
-                    stop_container 'postgres_idubi'
+                    stop_container 'postgres-idubi'
                     #                   [1. domain]   [2. app name]     [3.dockerfile path]
                     build_docker_image   'idubi'      'flask-crud'       './src/' 
                     '''
