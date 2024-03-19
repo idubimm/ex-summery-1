@@ -136,6 +136,5 @@ stop_container() {
 
 stop_docker_compose() {
     DOCKERCOMPOSEFILE=$1
-    COMPOSENAME=$2
-    echo `docker-compose -f $DOCKERCOMPOSEFILE down`
+    echo `docker-compose -f $DOCKERCOMPOSEFILE down --remove-orphans`
 }
