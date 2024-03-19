@@ -69,7 +69,7 @@ pipeline {
                     #               [1.  container name ]
                     stop_container 'postgres-idubi'
                     #                   [1. domain]   [2. app name]     [3.dockerfile path]
-                    build_docker_image   'idubi'      'flask-crud'       './src/' 
+                    build_docker_image   ''      'flask-crud'       './src/' 
                     '''
                     }
                 }
@@ -84,7 +84,7 @@ pipeline {
                         sh '''#!/bin/bash
                         source scripts/docker-utils.sh 
                         #                        [1. compose file path]         [2. docker build name]  [3. compose image prefix]
-                        build_docker_compose  'src/docker-compose-image.yml'  'idubi/flask-crud:lts'    'flasc-compose'
+                        build_docker_compose  'src/docker-compose-image.yml'  'flask-crud:lts'    'flasc-compose'
                         '''
                 }
             }

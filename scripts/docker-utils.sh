@@ -107,12 +107,15 @@ build_docker_image() {
     
     verify_docker_login  $USER $PASSWORD
     # 'flask-crud' $DOCKER_USERNAME $DOCKER_PASSWORD
-    echo `docker rmi -f   "$DOMAIN/$REPONAME:lts"`
-    echo `docker build -t "$DOMAIN/$REPONAME:lts" $PATHTODOCKERFILE`
+    # echo `docker rmi -f   "$DOMAIN/$REPONAME:lts"`
+    # echo `docker build -t "$DOMAIN/$REPONAME:lts" $PATHTODOCKERFILE`
+    echo `docker rmi -f   "$REPONAME:lts"`
+    echo `docker build -t "$REPONAME:lts" $PATHTODOCKERFILE`
+
 } 
 
 build_docker_compose() {
-    #  'src/docker-compose-image.yml'  'idubi/flask-crud:lts'    'flasc-compose'
+    #  'src/docker-compose-image.yml'  'flask-crud:lts'    'flasc-compose'
     DOCKERCOMPOSEFILE=$1
     FLASK_BUILD_NAME=$2
     COMPOSE_NAME=$3
