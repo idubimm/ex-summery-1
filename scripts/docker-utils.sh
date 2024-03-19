@@ -112,12 +112,13 @@ build_docker_image() {
 } 
 
 build_docker_compose() {
+    #  'src/docker-compose-image.yml'  'idubi/flask-crud:lts'    'flasc-compose'
     DOCKERCOMPOSEFILE=$1
-    APPNAME=$2
-    COMPOSENAME=$3
+    FLASK_BUILD_NAME=$2
+    COMPOSE_NAME=$3
 
-    export FLASK_BUILD_NAME=$APPNAME
-    export COMPOSE_NAME=$COMPOSENAME
+    export FLASK_BUILD_NAME=$FLASK_BUILD_NAME
+    export COMPOSE_NAME=$COMPOSE_NAME
     
     echo `docker-compose -f $DOCKERCOMPOSEFILE  up -d`
 }

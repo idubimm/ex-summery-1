@@ -84,7 +84,7 @@ pipeline {
                         sh '''#!/bin/bash
                         source scripts/docker-utils.sh 
                         #                        [1. compose file path]         [2. docker build name]  [3. compose image prefix]
-                        build_docker_compose  'src/docker-compose-image.yml'  'idubi/flask-crud:lts' 'flasc-compose'
+                        build_docker_compose  'src/docker-compose-image.yml'  'idubi/flask-crud:lts'    'flasc-compose'
                         '''
                 }
             }

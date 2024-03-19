@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web-app:
-    container_name: $COMPOSE_NAME
+    container_name: "${COMPOSE_NAME}-${FLASK_BUILD_NAME}"
     image: $FLASK_BUILD_NAME
     ports:
       - "5000:5000"
@@ -19,7 +19,7 @@ services:
     networks:
       - flask-ntwrk
   postgres-db:
-    container_name: flascompose_postgres-db
+    container_name: "${COMPOSE_NAME}-postgres"
     image: postgres
     environment:
       POSTGRES_USER: idubi
