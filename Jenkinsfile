@@ -47,11 +47,11 @@ pipeline {
             steps {
                 script {
                         sh '''#!/bin/bash
-                        source scripts/test-flask-app.sh
-                                                [1.flask app endpoint]   [2.#retries]  [3.interval secconds]
-                        validate_flask_in_loop "http://127.0.0.1:5000"     5               1  
-                        # kill the application after test completed
-                        pkill -f "python.*src/app.py"                     
+                            source scripts/test-flask-app.sh
+                                                    [1.flask app endpoint]   [2.#retries]  [3.interval secconds]
+                            validate_flask_in_loop "http://127.0.0.1:5000"     5               1  
+                            # kill the application after test completed
+                            pkill -f "python.*src/app.py"                     
                         '''
                 }
             }
@@ -63,13 +63,13 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker-idubi' , usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) 
                     {
                     sh '''#!/bin/bash
-                    source scripts/docker-utils.sh 
-                    # since we are connecting to the db in docker compose with same port as the db , 
-                    # and we open it for tests in host - we need to stop db (port is already allocated error)
-                    #               [1.  container name ]
-                    stop_container 'postgres-idubi'
-                    #                   [1. domain]   [2. app name]     [3.dockerfile path]
-                    build_docker_image   ''      'flask-crud'       './src/' 
+                        source scripts/docker-utils.sh 
+                        # since we are connecting to the db in docker compose with same port as the db , 
+                        # and we open it for tests in host - we need to stop db (port is already allocated error)
+                        #               [1.  container name ]
+                        stop_container 'postgres-idubi'
+                        #                   [1. domain]   [2. app name]     [3.dockerfile path]
+                        build_docker_image   ''      'flask-crud'       './src/' 
                     '''
                     }
                 }
@@ -82,9 +82,9 @@ pipeline {
                         //  we allready arive here after logged into docker so no need to 
                         //  load docker credentials agin
                         sh '''#!/bin/bash
-                        source scripts/docker-utils.sh 
-                        #                        [1. compose file path]         [2. docker build name]  [3. compose image prefix]
-                        build_docker_compose  'src/docker-compose-image.yml'  'idubi/flask-crud:lts'    'flask-compose'
+                            source scripts/docker-utils.sh 
+                            #                        [1. compose file path]         [2. docker build name]  [3. compose image prefix]
+                            build_docker_compose  'src/docker-compose-image.yml'  'idubi/flask-crud:lts'    'flask-compose'
                         '''
                 }
             }
@@ -94,11 +94,11 @@ pipeline {
             steps {
                 script {
                         sh '''#!/bin/bash
-                        source scripts/test-flask-app.sh
-                                                [1.flask app endpoint]   [2.#retries]  [3.interval secconds]
-                        validate_flask_in_loop "http://127.0.0.1:5000"     5               1  
-                        source scripts/docker-utils.sh
-                        stop_docker_compose 'src/docker-compose-image.yml'
+                            source scripts/test-flask-app.sh
+                                                    [1.flask app endpoint]   [2.#retries]  [3.interval secconds]
+                            validate_flask_in_loop "http://127.0.0.1:5000"     5               1  
+                            source scripts/docker-utils.sh
+                            stop_docker_compose 'src/docker-compose-image.yml'
                         '''                        
                 }
             }
@@ -106,20 +106,14 @@ pipeline {
     }
     post  {
             always  {  
-                  script {              
-                        sh 'docker-compose -f src/docker-compose-image.yml down --remove-orphans'
-                        def runningPostgres = sh(script: "docker ps | grep postgres-idubi | wc -l", returnStdout: true).trim()
-                        if (runningPostgres == "1") {
-                           sh 'docker stop postgres-idubi'
-                        }
-                        def runningComposeWebApp = sh(script: "docker ps | grep flask-compose-web-app | wc -l", returnStdout: true).trim()
-                        if (runningComposeWebApp == "1") {
-                           sh 'docker stop flascompose_web-app'
-                        }
-                        def runningComposePostgres = sh(script: "docker ps | grep flask-compose-postgres-db | wc -l", returnStdout: true).trim()
-                        if (runningComposePostgres == "1") {
-                           sh 'docker stop flascompose_postgres-db'
-                        }
+                  script {    
+                        sh '''#!/bin/bash
+                            source scripts/docker-utils.sh  
+                            stop_docker_compose 'src/docker-compose-image.yml'         
+                            stop_container 'postgres-idubi'
+                            stop_container 'flask-compose-web-app'
+                            stop_container 'flask-compose-postgres-db'
+                        '''
                   }
                 }
             }
@@ -137,23 +131,4 @@ pipeline {
         //     }
     // }
 
-    // post  {
-    //         always  {  
-    //               script {              
-    //                     sh 'docker-compose -f ./docker-compose-image.yml down --remove-orphans'
-    //                     def runningPostgres = sh(script: "docker ps | grep postgres-idubi | wc -l", returnStdout: true).trim()
-    //                     if (runningPostgres == "1") {
-    //                        sh 'docker stop postgres-idubi'
-    //                     }
-    //                     def runningComposeWebApp = sh(script: "docker ps | grep flascompose_web-app | wc -l", returnStdout: true).trim()
-    //                     if (runningComposeWebApp == "1") {
-    //                        sh 'docker stop flascompose_web-app'
-    //                     }
-    //                     def runningComposePostgres = sh(script: "docker ps | grep flascompose_postgres-db | wc -l", returnStdout: true).trim()
-    //                     if (runningComposePostgres == "1") {
-    //                        sh 'docker stop flascompose_postgres-db'
-    //                     }
-    //               }
-    //             }
-    //         }
-    // }
+     
