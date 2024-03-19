@@ -122,6 +122,11 @@ build_docker_compose() {
     echo `docker-compose -f $DOCKERCOMPOSEFILE  up -d`
 }
 
+stop_container() {
+    CONTAINERNAME=$1
+    echo `docker stop $CONTAINERNAME`
+} 
+
 stop_docker_compose() {
     DOCKERCOMPOSEFILE=$1
     COMPOSENAME=$2
