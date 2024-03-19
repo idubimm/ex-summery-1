@@ -50,7 +50,11 @@ pipeline {
                         source scripts/bash-utils.sh
                         source scripts/test-flask-app.sh
                                                 [1.flask app endpoint]   [2.#retries]  [3.interval secconds]
-                        loop-until-success  'validate_flask_execution "http://127.0.0.1:5000"'     5               1  
+                        executeion_result=loop-until-success  'validate_flask_execution "http://127.0.0.1:5000"'     5               1  
+                        if [ $executeion_result -eq "1" ]; then 
+                            pkill -f "python.*src/app.py"                       
+                            error('failed totest flask execution.')
+                        fi
                         # kill the application after test completed
                         pkill -f "python.*src/app.py"                     
                         '''
