@@ -122,6 +122,9 @@ build_docker_compose() {
 
     export FLASK_BUILD_NAME=$FLASK_BUILD_NAME
     export COMPOSE_NAME=$COMPOSE_NAME
+
+    # export FLASK_BUILD_NAME=idubi/flask-crud:lts
+    # export COMPOSE_NAME=flask-compose
     
     echo `docker-compose -f $DOCKERCOMPOSEFILE  up -d`
 }
