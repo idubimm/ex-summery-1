@@ -75,7 +75,7 @@ pipeline {
                 }
             }            
         }
-        stage('test sanity on created docker image with docker compose')       
+        stage('load docker image in docker compose - 2 services in a bundle')       
         {
             steps {
                 script{

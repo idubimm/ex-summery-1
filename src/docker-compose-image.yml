@@ -15,6 +15,7 @@ services:
       DB_PORT: 5432
     depends_on:
       - postgres-db
+    restart: On-failure
     networks:
       - flask-ntwrk
   postgres-db:
