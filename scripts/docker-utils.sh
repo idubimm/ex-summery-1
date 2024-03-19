@@ -132,9 +132,10 @@ build_docker_compose() {
 stop_container() {
     CONTAINERNAME=$1
     runningContainer = echo `docker ps | grep $CONTAINERNAME | wc -l`
-    if (runningContainer == "1") {
-        echo `docker stop $CONTAINERNAME`
-    }
+    if (runningContainer == "1");then
+        echo `docker stop $CONTAINERNAME`;
+    fi
+   
     
 } 
 
