@@ -106,11 +106,8 @@ build_docker_image() {
     PATHTODOCKERFILE=$3
     
     verify_docker_login  $USER $PASSWORD
-    # 'flask-crud' $DOCKER_USERNAME $DOCKER_PASSWORD
-    # echo `docker rmi -f   "$DOMAIN/$REPONAME:lts"`
-    # echo `docker build -t "$DOMAIN/$REPONAME:lts" $PATHTODOCKERFILE`
-    echo `docker rmi -f   "$REPONAME:lts"`
-    echo `docker build -t "$REPONAME:lts" $PATHTODOCKERFILE`
+    echo `docker rmi -f   "$DOMAIN/$REPONAME:lts"`
+    echo `docker build -t "$DOMAIN/$REPONAME:lts" $PATHTODOCKERFILE`
 
 } 
 
@@ -123,9 +120,6 @@ build_docker_compose() {
     export FLASK_BUILD_NAME=$FLASK_BUILD_NAME
     export COMPOSE_NAME=$COMPOSE_NAME
 
-    # export FLASK_BUILD_NAME=idubi/flask-crud:lts
-    # export COMPOSE_NAME=flask-compose
-    
     echo `docker-compose -f $DOCKERCOMPOSEFILE  up -d`
 }
 
@@ -138,5 +132,12 @@ stop_container() {
 
 stop_docker_compose() {
     DOCKERCOMPOSEFILE=$1
+    FLASK_BUILD_NAME=$2
+    COMPOSE_NAME=$3
+
+    export FLASK_BUILD_NAME=$FLASK_BUILD_NAME
+    export COMPOSE_NAME=$COMPOSE_NAME
+
+
     echo `docker-compose -f $DOCKERCOMPOSEFILE down --remove-orphans`
 }

@@ -69,7 +69,7 @@ pipeline {
                         #               [1.  container name ]
                         stop_container 'postgres-idubi'
                         #                   [1. domain]   [2. app name]     [3.dockerfile path]
-                        build_docker_image   ''      'flask-crud'       './src/' 
+                        build_docker_image   'idubi'      'flask-crud'       './src/' 
                     '''
                     }
                 }
@@ -98,7 +98,7 @@ pipeline {
                                                     [1.flask app endpoint]   [2.#retries]  [3.interval secconds]
                             validate_flask_in_loop "http://127.0.0.1:5000"     5               1  
                             source scripts/docker-utils.sh
-                            stop_docker_compose 'src/docker-compose-image.yml'
+                            stop_docker_compose 'src/docker-compose-image.yml' 'idubi/flask-crud:lts'    'flask-compose'
                         '''                        
                 }
             }
@@ -109,7 +109,7 @@ pipeline {
                   script {    
                         sh '''#!/bin/bash
                             source scripts/docker-utils.sh  
-                            stop_docker_compose 'src/docker-compose-image.yml'         
+                            stop_docker_compose 'src/docker-compose-image.yml'  'idubi/flask-crud:lts'    'flask-compose'      
                             stop_container 'postgres-idubi'
                             stop_container 'flask-compose-web-app'
                             stop_container 'flask-compose-postgres-db'
